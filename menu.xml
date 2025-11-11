@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+  <starters>
+    <item>
+      <name>Garlic Herb Bread</name>
+      <price>4.5</price>
+      <description>Toasted baguette with roasted garlic butter and parsley.</description>
+      <image>https://images.pexels.com/photos/357573/pexels-photo-357573.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Tomato Basil Bruschetta</name>
+      <price>6.0</price>
+      <description>Ripe tomatoes, basil, and olive oil on crispy ciabatta.</description>
+      <image>https://images.pexels.com/photos/416471/pexels-photo-416471.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Roasted Pumpkin Soup</name>
+      <price>7.5</price>
+      <description>Velvety pumpkin with a hint of nutmeg and cream.</description>
+      <image>https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+  </starters>
+
+  <mains>
+    <item>
+      <name>Citrus Glazed Salmon</name>
+      <price>18.0</price>
+      <description>Pan-seared salmon with orange glaze, served with greens.</description>
+      <image>https://images.pexels.com/photos/3296273/pexels-photo-3296273.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Grilled Chicken Alfredo</name>
+      <price>16.5</price>
+      <description>Fettuccine tossed in creamy sauce with grilled chicken.</description>
+      <image>https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Margherita Pizza</name>
+      <price>14.0</price>
+      <description>San Marzano tomato, fresh mozzarella, and basil.</description>
+      <image>https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Veggie Power Bowl</name>
+      <price>13.0</price>
+      <description>Quinoa, roasted veggies, chickpeas, avocado, lemon tahini.</description>
+      <image>https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+  </mains>
+
+  <desserts>
+    <item>
+      <name>Classic Tiramisu</name>
+      <price>7.0</price>
+      <description>Espresso-soaked ladyfingers with mascarpone and cocoa.</description>
+      <image>https://images.pexels.com/photos/15455310/pexels-photo-15455310.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Warm Apple Crumble</name>
+      <price>6.5</price>
+      <description>Spiced apples with a buttery crumble, served with vanilla.</description>
+      <image>https://images.pexels.com/photos/31855845/pexels-photo-31855845.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+    <item>
+      <name>Lemon Cheesecake</name>
+      <price>6.5</price>
+      <description>Silky cheesecake with bright lemon zest and curd.</description>
+      <image>https://images.pexels.com/photos/14127631/pexels-photo-14127631.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800&amp;h=600</image>
+    </item>
+  </desserts>
+</menu>
+
+

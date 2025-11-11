@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SunnyBite Restaurant — Digital Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="header-row">
+          <div class="brand-section">
+          <h1 class="brand">Restaurant</h1>
+          <p class="brand-subtitle">Premium Dining Experience</p>
+        </div>
+          <div class="header-actions">
+            <button id="cta-order" class="premium-order-btn ripple-container" type="button">
+              <span class="order-icon">🛒</span>
+              <span class="order-text">Order Now</span>
+              <span class="order-badge">
+                <span id="cart-count" class="badge-count">0</span>
+              </span>
+              <span class="order-price">
+                <span id="cart-total">$0.00</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <p class="tagline">🌟 Fresh • Warm • Delicious 🌟</p>
+        <p class="tagline-subtitle">Crafted with passion, served with love. Experience culinary excellence.</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="intro-section">
+        <h2 class="intro-title">Welcome to Our Restaurant</h2>
+        <p class="intro-text">Discover our carefully curated menu featuring the finest ingredients sourced locally. Each dish is prepared by our expert chefs with attention to detail and passion for excellence. Whether you're looking for a quick bite or a full dining experience, we have something special for you.</p>
+      </section>
+
+      <nav class="filter-bar" aria-label="Filter menu categories">
+        <button class="filter-btn is-active" data-filter="all" type="button">
+          <span class="filter-icon">🍽️</span>
+          <span class="filter-label">All Menu</span>
+        </button>
+        <button class="filter-btn" data-filter="starters" type="button">
+          <span class="filter-icon">🥗</span>
+          <span class="filter-label">Starters</span>
+        </button>
+        <button class="filter-btn" data-filter="mains" type="button">
+          <span class="filter-icon">🍝</span>
+          <span class="filter-label">Main Courses</span>
+        </button>
+        <button class="filter-btn" data-filter="desserts" type="button">
+          <span class="filter-icon">🍰</span>
+          <span class="filter-label">Desserts</span>
+        </button>
+      </nav>
+
+      <section class="menu-section" id="starters-section">
+        <h2 class="section-title">
+          <button class="pill pill-starters linklike" data-filter="starters" type="button">🥗 Starters</button>
+        </h2>
+        <ul id="starters" class="menu-grid" aria-live="polite"></ul>
+      </section>
+
+      <section class="menu-section" id="mains-section">
+        <h2 class="section-title">
+          <button class="pill pill-mains linklike" data-filter="mains" type="button">🍝 Main Courses</button>
+        </h2>
+        <ul id="mains" class="menu-grid" aria-live="polite"></ul>
+      </section>
+
+      <section class="menu-section" id="desserts-section">
+        <h2 class="section-title">
+          <button class="pill pill-desserts linklike" data-filter="desserts" type="button">🍰 Desserts</button>
+        </h2>
+        <ul id="desserts" class="menu-grid" aria-live="polite"></ul>
+      </section>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>Restaurant</h3>
+            <p>🏪 123 Culinary Street, Food City</p>
+            <p>📞 (555) 123-4567</p>
+            <p>📧 hello@restaurant.com</p>
+          </div>
+          <div class="footer-section">
+            <h3>Hours</h3>
+            <p>Mon - Thu: 11:00 AM - 10:00 PM</p>
+            <p>Fri - Sat: 11:00 AM - 11:00 PM</p>
+            <p>Sunday: 12:00 PM - 9:00 PM</p>
+          </div>
+          <div class="footer-section">
+            <h3>Follow Us</h3>
+            <p>🌐 Facebook • Instagram • Twitter</p>
+            <p>⭐ Rate us on Google & TripAdvisor</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+         <p>&copy; <span id="year"></span> Restaurant • Made with ❤️ • All rights reserved</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Order Modal -->
+    <div id="order-modal" class="modal-overlay hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="modal-title" class="modal-title">Your Order</h2>
+          <button class="modal-close" type="button" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="cart-contents"></div>
+          <div class="cart-summary">
+            <div class="summary-row">
+              <span>Items:</span>
+              <span id="modal-item-count">0</span>
+            </div>
+            <div class="summary-row total">
+              <strong>Total:</strong>
+              <strong id="modal-total">$0.00</strong>
+            </div>
+          </div>
+          <div class="order-type-section">
+            <label><strong>How would you like your order?</strong></label>
+            <div class="order-type-buttons">
+              <button type="button" class="order-type-btn" data-type="Dine-in">
+                <span class="order-type-icon">🍽️</span>
+                <span class="order-type-label">Dine-in</span>
+              </button>
+              <button type="button" class="order-type-btn" data-type="Takeout">
+                <span class="order-type-icon">📦</span>
+                <span class="order-type-label">Takeout</span>
+              </button>
+              <button type="button" class="order-type-btn" data-type="Delivery">
+                <span class="order-type-icon">🚚</span>
+                <span class="order-type-label">Delivery</span>
+              </button>
+            </div>
+            <input type="hidden" id="order-type" value="">
+          </div>
+          <div class="modal-actions">
+            <button id="finalize-order" class="primary-cta" type="button">Finalize Order</button>
+            <button id="cancel-order" class="secondary-btn" type="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const currency = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
+
+      function text(node) {
+        return node?.textContent?.trim() ?? "";
+      }
+
+      function createMenuItemElement(name, price, description, imageUrl, priceValue) {
+        const li = document.createElement("li");
+        li.className = "menu-item";
+        li.tabIndex = 0;
+
+        if (imageUrl) {
+          const media = document.createElement("div");
+          media.className = "item-media";
+          const img = document.createElement("img");
+          const cacheBust = (imageUrl.includes("?") ? "&" : "?") + "v=" + Date.now();
+          img.src = imageUrl + cacheBust;
+          img.alt = name;
+          img.loading = "lazy";
+          media.appendChild(img);
+          li.appendChild(media);
+        }
+
+        const title = document.createElement("div");
+        title.className = "item-name";
+        title.textContent = name;
+
+        const trailing = document.createElement("div");
+        trailing.className = "item-price";
+        trailing.textContent = price;
+
+        const desc = document.createElement("p");
+        desc.className = "item-desc";
+        desc.textContent = description;
+
+        // CTA
+        const cta = document.createElement("button");
+        cta.className = "item-cta ripple-container";
+        cta.type = "button";
+        cta.textContent = "Add to order";
+        cta.addEventListener("click", (e) => {
+          incrementCart(name, priceValue);
+          spawnRipple(e, cta);
+        });
+
+        // Content row
+        li.appendChild(title);
+        li.appendChild(trailing);
+        if (description) li.appendChild(desc);
+        li.appendChild(cta);
+        return li;
+      }
+
+      function renderCategory(xmlDoc, tagName, targetId) {
+        const container = document.getElementById(targetId);
+        const nodes = xmlDoc.getElementsByTagName(tagName)[0]?.getElementsByTagName("item") ?? [];
+        container.innerHTML = "";
+        for (let i = 0; i < nodes.length; i++) {
+          const item = nodes[i];
+          const name = text(item.getElementsByTagName("name")[0]);
+          const priceRaw = text(item.getElementsByTagName("price")[0]);
+          const desc = text(item.getElementsByTagName("description")[0]);
+          const imageUrl = text(item.getElementsByTagName("image")[0]);
+          const numeric = !isNaN(Number(priceRaw)) ? Number(priceRaw) : 0;
+          const price = priceRaw && !isNaN(Number(priceRaw)) ? currency.format(numeric) : priceRaw;
+          container.appendChild(createMenuItemElement(name, price, desc, imageUrl, numeric));
+        }
+      }
+
+      async function loadMenu() {
+        const status = document.getElementById("status");
+        try {
+          status.textContent = "Loading menu…";
+          const response = await fetch(`menu.xml?v=${Date.now()}`, { cache: "no-store" });
+          if (!response.ok) throw new Error("Failed to load menu.xml");
+          const xmlText = await response.text();
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+          const parseError = xmlDoc.getElementsByTagName("parsererror")[0];
+          if (parseError) throw new Error("Invalid XML format");
+
+          renderCategory(xmlDoc, "starters", "starters");
+          renderCategory(xmlDoc, "mains", "mains");
+          renderCategory(xmlDoc, "desserts", "desserts");
+          setupReveal();
+          status.textContent = "";
+        } catch (err) {
+          status.textContent = "Could not load the menu. Please try opening via a local server.";
+          console.error(err);
+        }
+      }
+
+      function setFilter(category) {
+        const sections = [
+          { id: "starters-section", key: "starters" },
+          { id: "mains-section", key: "mains" },
+          { id: "desserts-section", key: "desserts" },
+        ];
+
+        // Toggle sections visibility
+        sections.forEach(({ id, key }) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (category === "all" || category === key) {
+            el.classList.remove("hidden");
+          } else {
+            el.classList.add("hidden");
+          }
+        });
+
+        // Update active state on filter buttons
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.toggle("is-active", btn.dataset.filter === category || (category === "all" && btn.dataset.filter === "all"));
+        });
+      }
+
+      function wireFilters() {
+        // Top filter bar
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.add("ripple-container");
+          btn.addEventListener("click", (e) => {
+            setFilter(btn.dataset.filter);
+            spawnRipple(e, btn);
+          });
+        });
+        // Clickable section pills
+        document.querySelectorAll("[data-filter].pill").forEach((pill) => {
+          pill.classList.add("ripple-container");
+          pill.addEventListener("click", (e) => {
+            setFilter(pill.dataset.filter);
+            spawnRipple(e, pill);
+          });
+        });
+
+        // Order Now button handled in DOMContentLoaded
+      }
+
+      function setupReveal() {
+        const items = document.querySelectorAll(".menu-item");
+        if (!("IntersectionObserver" in window)) {
+          items.forEach((el) => el.classList.add("is-revealed"));
+          return;
+        }
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-revealed");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+        items.forEach((el) => observer.observe(el));
+      }
+
+      function spawnRipple(event, el) {
+        const rect = el.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        ripple.className = "ripple";
+        const size = Math.max(rect.width, rect.height) * 1.4;
+        ripple.style.width = ripple.style.height = size + "px";
+        ripple.style.left = (event.clientX - rect.left) + "px";
+        ripple.style.top = (event.clientY - rect.top) + "px";
+        el.appendChild(ripple);
+        ripple.addEventListener("animationend", () => ripple.remove());
+      }
+
+      // Cart management
+      let cart = []; // Array of { name, price, quantity, priceValue }
+
+      function incrementCart(itemName, priceValue) {
+        const existing = cart.find(item => item.name === itemName);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push({ name: itemName, price: currency.format(priceValue), quantity: 1, priceValue: priceValue });
+        }
+        updateCartDisplay();
+        const status = document.getElementById("status");
+        if (status) {
+          status.textContent = `Added "${itemName}" to order.`;
+          setTimeout(() => { if (status.textContent?.includes(itemName)) status.textContent = ""; }, 1500);
+        }
+      }
+
+      function updateCartDisplay() {
+        const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const cartTotal = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
+        const badge = document.getElementById("cart-count");
+        if (badge) badge.textContent = String(cartCount);
+        const total = document.getElementById("cart-total");
+        if (total) total.textContent = currency.format(cartTotal);
+      }
+
+      function showOrderModal() {
+        const modal = document.getElementById("order-modal");
+        if (!modal) return;
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+
+        const cartContents = document.getElementById("cart-contents");
+        const itemCountEl = document.getElementById("modal-item-count");
+        const totalEl = document.getElementById("modal-total");
+
+        if (cart.length === 0) {
+          cartContents.innerHTML = '<p style="text-align: center; color: var(--ink-dim); padding: 20px;">Your cart is empty. Add some items to your order!</p>';
+          if (itemCountEl) itemCountEl.textContent = "0";
+          if (totalEl) totalEl.textContent = currency.format(0);
+          return;
+        }
+
+        const cartList = document.createElement("ul");
+        cartList.className = "cart-list";
+        cart.forEach(item => {
+          const li = document.createElement("li");
+          li.className = "cart-item";
+          const itemTotal = item.priceValue * item.quantity;
+          li.innerHTML = `
+            <div class="cart-item-info">
+              <span class="cart-item-name">${item.name}</span>
+              <span class="cart-item-quantity">Qty: ${item.quantity}</span>
+            </div>
+            <div class="cart-item-price">${currency.format(itemTotal)}</div>
+          `;
+          cartList.appendChild(li);
+        });
+        cartContents.innerHTML = "";
+        cartContents.appendChild(cartList);
+
+        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalAmount = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
+        if (itemCountEl) itemCountEl.textContent = String(totalCount);
+        if (totalEl) totalEl.textContent = currency.format(totalAmount);
+      }
+
+      function hideOrderModal() {
+        const modal = document.getElementById("order-modal");
+        if (modal) modal.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+
+      function finalizeOrder() {
+        if (cart.length === 0) {
+          alert("Your cart is empty!");
+          hideOrderModal();
+          return;
+        }
+        const orderTypeInput = document.getElementById("order-type");
+        const orderType = orderTypeInput.value;
+        if (!orderType) {
+          alert("Please select an order type!");
+          return;
+        }
+        const totalAmount = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
+        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        alert(`Order finalized!\n\n📋 Order Type: ${orderType}\n📦 Items: ${totalCount}\n💰 Total: ${currency.format(totalAmount)}\n\nThank you for your order!`);
+        cart = [];
+        updateCartDisplay();
+        orderTypeInput.value = "";
+        document.querySelectorAll(".order-type-btn").forEach(btn => btn.classList.remove("active"));
+        hideOrderModal();
+        const status = document.getElementById("status");
+        if (status) {
+          status.textContent = "Order finalized successfully!";
+          setTimeout(() => { status.textContent = ""; }, 3000);
+        }
+      }
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+      // initialize header total formatting once currency is ready
+      const totalSpan = document.getElementById("cart-total");
+      if (totalSpan) totalSpan.textContent = currency.format(0);
+      window.addEventListener("DOMContentLoaded", () => {
+        loadMenu().then(() => {
+          wireFilters();
+          
+          // Order type button handlers
+          document.querySelectorAll(".order-type-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              document.querySelectorAll(".order-type-btn").forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+              document.getElementById("order-type").value = btn.dataset.type;
+            });
+          });
+          
+          // Modal event handlers
+          const orderBtn = document.getElementById("cta-order");
+          if (orderBtn) {
+            orderBtn.addEventListener("click", (e) => {
+              spawnRipple(e, orderBtn);
+              showOrderModal();
+            });
+          }
+
+          const closeBtn = document.querySelector(".modal-close");
+          if (closeBtn) {
+            closeBtn.addEventListener("click", hideOrderModal);
+          }
+
+          const cancelBtn = document.getElementById("cancel-order");
+          if (cancelBtn) {
+            cancelBtn.addEventListener("click", hideOrderModal);
+          }
+
+          const finalizeBtn = document.getElementById("finalize-order");
+          if (finalizeBtn) {
+            finalizeBtn.addEventListener("click", finalizeOrder);
+          }
+
+          const modal = document.getElementById("order-modal");
+          if (modal) {
+            modal.addEventListener("click", (e) => {
+              if (e.target === modal) hideOrderModal();
+            });
+          }
+
+          // Close modal on Escape key
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+              const modal = document.getElementById("order-modal");
+              if (modal && !modal.classList.contains("hidden")) {
+                hideOrderModal();
+              }
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+  </html>
+
+

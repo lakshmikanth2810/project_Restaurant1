@@ -14,13 +14,13 @@
       <div class="container">
         <div class="header-row">
           <div class="brand-section">
-          <h1 class="brand">Restaurant</h1>
-          <p class="brand-subtitle">Premium Dining Experience</p>
+          <h1 class="brand" data-i18n="restaurant">Restaurant</h1>
+          <p class="brand-subtitle" data-i18n="premiumDining">Premium Dining Experience</p>
         </div>
           <div class="header-actions">
             <button id="cta-order" class="premium-order-btn ripple-container" type="button">
               <span class="order-icon">🛒</span>
-              <span class="order-text">Order Now</span>
+              <span class="order-text" data-i18n="orderNow">Order Now</span>
               <span class="order-badge">
                 <span id="cart-count" class="badge-count">0</span>
               </span>
@@ -28,55 +28,62 @@
                 <span id="cart-total">$0.00</span>
               </span>
             </button>
+            <div class="language-selector">
+              <select id="language-select" class="language-dropdown">
+                <option value="en">English</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="hi">हिंदी (Hindi)</option>
+              </select>
+            </div>
           </div>
         </div>
-        <p class="tagline">🌟 Fresh • Warm • Delicious 🌟</p>
-        <p class="tagline-subtitle">Crafted with passion, served with love. Experience culinary excellence.</p>
+        <p class="tagline" data-i18n="tagline">🌟 Fresh • Warm • Delicious 🌟</p>
+        <p class="tagline-subtitle" data-i18n="taglineSubtitle">Crafted with passion, served with love. Experience culinary excellence.</p>
       </div>
     </header>
 
     <main class="container">
       <section class="intro-section">
-        <h2 class="intro-title">Welcome to Our Restaurant</h2>
-        <p class="intro-text">Discover our carefully curated menu featuring the finest ingredients sourced locally. Each dish is prepared by our expert chefs with attention to detail and passion for excellence. Whether you're looking for a quick bite or a full dining experience, we have something special for you.</p>
+        <h2 class="intro-title" data-i18n="welcomeTitle">Welcome to Our Restaurant</h2>
+        <p class="intro-text" data-i18n="welcomeText">Discover our carefully curated menu featuring the finest ingredients sourced locally. Each dish is prepared by our expert chefs with attention to detail and passion for excellence. Whether you're looking for a quick bite or a full dining experience, we have something special for you.</p>
       </section>
 
       <nav class="filter-bar" aria-label="Filter menu categories">
         <button class="filter-btn is-active" data-filter="all" type="button">
           <span class="filter-icon">🍽️</span>
-          <span class="filter-label">All Menu</span>
+          <span class="filter-label" data-i18n="allMenu">All Menu</span>
         </button>
         <button class="filter-btn" data-filter="starters" type="button">
           <span class="filter-icon">🥗</span>
-          <span class="filter-label">Starters</span>
+          <span class="filter-label" data-i18n="starters">Starters</span>
         </button>
         <button class="filter-btn" data-filter="mains" type="button">
           <span class="filter-icon">🍝</span>
-          <span class="filter-label">Main Courses</span>
+          <span class="filter-label" data-i18n="mainCourses">Main Courses</span>
         </button>
         <button class="filter-btn" data-filter="desserts" type="button">
           <span class="filter-icon">🍰</span>
-          <span class="filter-label">Desserts</span>
+          <span class="filter-label" data-i18n="desserts">Desserts</span>
         </button>
       </nav>
 
       <section class="menu-section" id="starters-section">
         <h2 class="section-title">
-          <button class="pill pill-starters linklike" data-filter="starters" type="button">🥗 Starters</button>
+          <button class="pill pill-starters linklike" data-filter="starters" type="button"><span data-i18n="startersSection">🥗 Starters</span></button>
         </h2>
         <ul id="starters" class="menu-grid" aria-live="polite"></ul>
       </section>
 
       <section class="menu-section" id="mains-section">
         <h2 class="section-title">
-          <button class="pill pill-mains linklike" data-filter="mains" type="button">🍝 Main Courses</button>
+          <button class="pill pill-mains linklike" data-filter="mains" type="button"><span data-i18n="mainCoursesSection">🍝 Main Courses</span></button>
         </h2>
         <ul id="mains" class="menu-grid" aria-live="polite"></ul>
       </section>
 
       <section class="menu-section" id="desserts-section">
         <h2 class="section-title">
-          <button class="pill pill-desserts linklike" data-filter="desserts" type="button">🍰 Desserts</button>
+          <button class="pill pill-desserts linklike" data-filter="desserts" type="button"><span data-i18n="dessertsSection">🍰 Desserts</span></button>
         </h2>
         <ul id="desserts" class="menu-grid" aria-live="polite"></ul>
       </section>
@@ -111,46 +118,94 @@
       </div>
     </footer>
 
+    <div class="manager-access" aria-hidden="true">
+      <button id="manager-orders" class="manager-btn" type="button" title="Manager orders">📊</button>
+    </div>
+
     <!-- Order Modal -->
     <div id="order-modal" class="modal-overlay hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
       <div class="modal">
         <div class="modal-header">
-          <h2 id="modal-title" class="modal-title">Your Order</h2>
+          <h2 id="modal-title" class="modal-title" data-i18n="yourOrder">Your Order</h2>
           <button class="modal-close" type="button" aria-label="Close modal">&times;</button>
         </div>
         <div class="modal-body">
           <div id="cart-contents"></div>
           <div class="cart-summary">
             <div class="summary-row">
-              <span>Items:</span>
+              <span data-i18n="items">Items:</span>
               <span id="modal-item-count">0</span>
             </div>
             <div class="summary-row total">
-              <strong>Total:</strong>
+              <strong data-i18n="total">Total:</strong>
               <strong id="modal-total">$0.00</strong>
             </div>
           </div>
+          <div class="customer-info-section">
+            <label for="customer-name"><strong data-i18n="customerName">Customer Name</strong></label>
+            <input id="customer-name" type="text" name="customer-name" data-i18n-placeholder="enterCustomerName" placeholder="Enter customer name" autocomplete="name" />
+          </div>
           <div class="order-type-section">
-            <label><strong>How would you like your order?</strong></label>
+            <label><strong data-i18n="howWouldYouLikeOrder">How would you like your order?</strong></label>
             <div class="order-type-buttons">
               <button type="button" class="order-type-btn" data-type="Dine-in">
                 <span class="order-type-icon">🍽️</span>
-                <span class="order-type-label">Dine-in</span>
+                <span class="order-type-label" data-i18n="dineIn">Dine-in</span>
               </button>
               <button type="button" class="order-type-btn" data-type="Takeout">
                 <span class="order-type-icon">📦</span>
-                <span class="order-type-label">Takeout</span>
+                <span class="order-type-label" data-i18n="takeout">Takeout</span>
               </button>
               <button type="button" class="order-type-btn" data-type="Delivery">
                 <span class="order-type-icon">🚚</span>
-                <span class="order-type-label">Delivery</span>
+                <span class="order-type-label" data-i18n="delivery">Delivery</span>
               </button>
             </div>
             <input type="hidden" id="order-type" value="">
           </div>
           <div class="modal-actions">
-            <button id="finalize-order" class="primary-cta" type="button">Finalize Order</button>
-            <button id="cancel-order" class="secondary-btn" type="button">Cancel</button>
+            <button id="finalize-order" class="primary-cta" type="button" data-i18n="finalizeOrder">Finalize Order</button>
+            <button id="cancel-order" class="secondary-btn" type="button" data-i18n="cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Orders Modal -->
+    <div id="saved-orders-modal" class="modal-overlay hidden" role="dialog" aria-labelledby="saved-modal-title" aria-modal="true">
+      <div class="modal saved-orders-modal-large">
+        <div class="modal-header">
+          <h2 id="saved-modal-title" class="modal-title">Saved Demo Orders</h2>
+          <button id="saved-modal-close" class="modal-close" type="button" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="orders-filters">
+            <div class="filter-group">
+              <label for="filter-order-type">Order Type:</label>
+              <select id="filter-order-type" class="filter-select">
+                <option value="">All Types</option>
+                <option value="Dine-in">Dine-in</option>
+                <option value="Takeout">Takeout</option>
+                <option value="Delivery">Delivery</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filter-customer">Customer:</label>
+              <input type="text" id="filter-customer" class="filter-input" placeholder="Search customer name..." />
+            </div>
+            <div class="filter-group">
+              <label for="filter-date">Date:</label>
+              <input type="date" id="filter-date" class="filter-input" />
+            </div>
+            <button id="reset-filters" class="secondary-btn" type="button">Reset Filters</button>
+          </div>
+          <div id="saved-orders-contents" class="orders-table-container">
+            <!-- Saved orders table will be injected here -->
+          </div>
+          <div class="modal-actions">
+            <button id="download-orders" class="primary-cta" type="button">Download Orders CSV</button>
+            <button id="clear-saved-orders" class="secondary-btn" type="button">Clear Saved Orders</button>
+            <button id="close-saved-orders" class="primary-cta" type="button">Close</button>
           </div>
         </div>
       </div>
@@ -158,6 +213,237 @@
 
     <script>
       const currency = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
+
+      // Translation object
+      const translations = {
+        en: {
+          restaurant: "Restaurant",
+          premiumDining: "Premium Dining Experience",
+          tagline: "🌟 Fresh • Warm • Delicious 🌟",
+          taglineSubtitle: "Crafted with passion, served with love. Experience culinary excellence.",
+          orderNow: "Order Now",
+          welcomeTitle: "Welcome to Our Restaurant",
+          welcomeText: "Discover our carefully curated menu featuring the finest ingredients sourced locally. Each dish is prepared by our expert chefs with attention to detail and passion for excellence. Whether you're looking for a quick bite or a full dining experience, we have something special for you.",
+          allMenu: "All Menu",
+          starters: "Starters",
+          mainCourses: "Main Courses",
+          desserts: "Desserts",
+          startersSection: "🥗 Starters",
+          mainCoursesSection: "🍝 Main Courses",
+          dessertsSection: "🍰 Desserts",
+          addToOrder: "Add to order",
+          yourOrder: "Your Order",
+          items: "Items:",
+          total: "Total:",
+          customerName: "Customer Name",
+          enterCustomerName: "Enter customer name",
+          howWouldYouLikeOrder: "How would you like your order?",
+          dineIn: "Dine-in",
+          takeout: "Takeout",
+          delivery: "Delivery",
+          finalizeOrder: "Finalize Order",
+          cancel: "Cancel",
+          // Menu items - Starters
+          "Garlic Herb Bread": "Garlic Herb Bread",
+          "Garlic Herb Bread_desc": "Toasted baguette with roasted garlic butter and parsley.",
+          "Tomato Basil Bruschetta": "Tomato Basil Bruschetta",
+          "Tomato Basil Bruschetta_desc": "Ripe tomatoes, basil, and olive oil on crispy ciabatta.",
+          "Roasted Pumpkin Soup": "Roasted Pumpkin Soup",
+          "Roasted Pumpkin Soup_desc": "Velvety pumpkin with a hint of nutmeg and cream.",
+          // Menu items - Mains
+          "Citrus Glazed Salmon": "Citrus Glazed Salmon",
+          "Citrus Glazed Salmon_desc": "Pan-seared salmon with orange glaze, served with greens.",
+          "Grilled Chicken Alfredo": "Grilled Chicken Alfredo",
+          "Grilled Chicken Alfredo_desc": "Fettuccine tossed in creamy sauce with grilled chicken.",
+          "Margherita Pizza": "Margherita Pizza",
+          "Margherita Pizza_desc": "San Marzano tomato, fresh mozzarella, and basil.",
+          "Veggie Power Bowl": "Veggie Power Bowl",
+          "Veggie Power Bowl_desc": "Quinoa, roasted veggies, chickpeas, avocado, lemon tahini.",
+          // Menu items - Desserts
+          "Classic Tiramisu": "Classic Tiramisu",
+          "Classic Tiramisu_desc": "Espresso-soaked ladyfingers with mascarpone and cocoa.",
+          "Warm Apple Crumble": "Warm Apple Crumble",
+          "Warm Apple Crumble_desc": "Spiced apples with a buttery crumble, served with vanilla.",
+          "Lemon Cheesecake": "Lemon Cheesecake",
+          "Lemon Cheesecake_desc": "Silky cheesecake with bright lemon zest and curd."
+        },
+        te: {
+          restaurant: "రెస్టారెంట్",
+          premiumDining: "ప్రీమియం డైనింగ్ అనుభవం",
+          tagline: "🌟 తాజా • వెచ్చని • రుచికరమైన 🌟",
+          taglineSubtitle: "అభిరుచితో తయారు చేయబడింది, ప్రేమతో సేవ చేయబడింది. వంటకాల శ్రేష్ఠతను అనుభవించండి.",
+          orderNow: "ఇప్పుడే ఆర్డర్ చేయండి",
+          welcomeTitle: "మా రెస్టారెంట్‌కు స్వాగతం",
+          welcomeText: "స్థానికంగా సేకరించిన ఉత్తమ పదార్థాలతో మా జాగ్రత్తగా ఎంపిక చేసిన మెనూను కనుగొనండి. ప్రతి వంటకం మా నిపుణుల షెఫ్‌లచే వివరాలకు శ్రద్ధ మరియు శ్రేష్ఠత కోసం అభిరుచితో తయారు చేయబడింది. మీరు శీఘ్ర నమలడం కోసం చూస్తున్నా లేదా పూర్తి డైనింగ్ అనుభవం కోసం చూస్తున్నా, మీ కోసం ఏదో ప్రత్యేకమైనది ఉంది.",
+          allMenu: "అన్ని మెనూ",
+          starters: "స్టార్టర్‌లు",
+          mainCourses: "ప్రధాన వంటకాలు",
+          desserts: "డెజర్ట్‌లు",
+          startersSection: "🥗 స్టార్టర్‌లు",
+          mainCoursesSection: "🍝 ప్రధాన వంటకాలు",
+          dessertsSection: "🍰 డెజర్ట్‌లు",
+          addToOrder: "ఆర్డర్‌కు జోడించండి",
+          yourOrder: "మీ ఆర్డర్",
+          items: "వస్తువులు:",
+          total: "మొత్తం:",
+          customerName: "కస్టమర్ పేరు",
+          enterCustomerName: "కస్టమర్ పేరు నమోదు చేయండి",
+          howWouldYouLikeOrder: "మీరు మీ ఆర్డర్‌ను ఎలా కోరుకుంటారు?",
+          dineIn: "డైన్-ఇన్",
+          takeout: "టేకౌట్",
+          delivery: "డెలివరీ",
+          finalizeOrder: "ఆర్డర్‌ను అంతిమీకరించండి",
+          cancel: "రద్దు చేయండి",
+          // Menu items - Starters
+          "Garlic Herb Bread": "వెల్లులి మూలిక రొట్టె",
+          "Garlic Herb Bread_desc": "వేయించిన వెల్లులి వెన్న మరియు పార్స్లీతో వేయించిన బాగ్యుట్.",
+          "Tomato Basil Bruschetta": "టమాటో బాసిల్ బ్రుస్చెట్టా",
+          "Tomato Basil Bruschetta_desc": "క్రిస్పీ సియాబాట్టాపై పండిన టమాటోలు, బాసిల్ మరియు ఆలివ్ ఆయిల్.",
+          "Roasted Pumpkin Soup": "వేయించిన గుమ్మడికాయ సూప్",
+          "Roasted Pumpkin Soup_desc": "నట్మెగ్ మరియు క్రీమ్ యొక్క సూచనతో వెల్వెటీ గుమ్మడికాయ.",
+          // Menu items - Mains
+          "Citrus Glazed Salmon": "సిట్రస్ గ్లేజ్డ్ సాల్మన్",
+          "Citrus Glazed Salmon_desc": "ఆరెంజ్ గ్లేజ్‌తో పాన్-సీర్డ్ సాల్మన్, గ్రీన్స్‌తో సర్వ్ చేయబడింది.",
+          "Grilled Chicken Alfredo": "గ్రిల్ చేసిన చికెన్ ఆల్ఫ్రెడో",
+          "Grilled Chicken Alfredo_desc": "గ్రిల్ చేసిన చికెన్‌తో క్రీమీ సాస్‌లో టాస్ చేసిన ఫెట్టుసిని.",
+          "Margherita Pizza": "మార్గెరిటా పిజ్జా",
+          "Margherita Pizza_desc": "సాన్ మార్జానో టమాటో, తాజా మొజ్జరెల్లా మరియు బాసిల్.",
+          "Veggie Power Bowl": "వెజ్జీ పవర్ బౌల్",
+          "Veggie Power Bowl_desc": "క్వినోవా, వేయించిన కూరగాయలు, చిక్పీస్, అవోకాడో, లెమన్ తహిని.",
+          // Menu items - Desserts
+          "Classic Tiramisu": "క్లాసిక్ టిరామిసు",
+          "Classic Tiramisu_desc": "మస్కర్పోన్ మరియు కోకోతో ఎస్ప్రెసో-నానబడిన లేడీఫింగర్స్.",
+          "Warm Apple Crumble": "వెచ్చని ఆపిల్ క్రంబుల్",
+          "Warm Apple Crumble_desc": "వెనిల్లాతో సర్వ్ చేసిన బటర్ క్రంబుల్‌తో సుగంధ ద్రవ్యాల ఆపిల్‌లు.",
+          "Lemon Cheesecake": "లెమన్ చీజ్‌కేక్",
+          "Lemon Cheesecake_desc": "ప్రకాశవంతమైన లెమన్ జెస్ట్ మరియు కర్డ్‌తో సిల్కీ చీజ్‌కేక్."
+        },
+        hi: {
+          restaurant: "रेस्तरां",
+          premiumDining: "प्रीमियम डाइनिंग अनुभव",
+          tagline: "🌟 ताजा • गर्म • स्वादिष्ट 🌟",
+          taglineSubtitle: "जुनून के साथ तैयार, प्यार के साथ परोसा गया। पाक उत्कृष्टता का अनुभव करें।",
+          orderNow: "अभी ऑर्डर करें",
+          welcomeTitle: "हमारे रेस्तरां में आपका स्वागत है",
+          welcomeText: "स्थानीय रूप से सोर्स किए गए बेहतरीन सामग्री के साथ हमारे सावधानीपूर्वक क्यूरेटेड मेनू की खोज करें। प्रत्येक व्यंजन हमारे विशेषज्ञ शेफ द्वारा विस्तार पर ध्यान और उत्कृष्टता के लिए जुनून के साथ तैयार किया जाता है। चाहे आप एक त्वरित नाश्ता ढूंढ रहे हों या पूर्ण डाइनिंग अनुभव, हमारे पास आपके लिए कुछ खास है।",
+          allMenu: "सभी मेनू",
+          starters: "स्टार्टर",
+          mainCourses: "मुख्य व्यंजन",
+          desserts: "डेज़र्ट",
+          startersSection: "🥗 स्टार्टर",
+          mainCoursesSection: "🍝 मुख्य व्यंजन",
+          dessertsSection: "🍰 डेज़र्ट",
+          addToOrder: "ऑर्डर में जोड़ें",
+          yourOrder: "आपका ऑर्डर",
+          items: "आइटम:",
+          total: "कुल:",
+          customerName: "ग्राहक का नाम",
+          enterCustomerName: "ग्राहक का नाम दर्ज करें",
+          howWouldYouLikeOrder: "आप अपना ऑर्डर कैसे चाहेंगे?",
+          dineIn: "डाइन-इन",
+          takeout: "टेकआउट",
+          delivery: "डिलीवरी",
+          finalizeOrder: "ऑर्डर अंतिम रूप दें",
+          cancel: "रद्द करें",
+          // Menu items - Starters
+          "Garlic Herb Bread": "लहसुन जड़ी बूटी रोटी",
+          "Garlic Herb Bread_desc": "भुने हुए लहसुन मक्खन और अजमोद के साथ टोस्टेड बैगुएट।",
+          "Tomato Basil Bruschetta": "टमाटर तुलसी ब्रुशेटा",
+          "Tomato Basil Bruschetta_desc": "कुरकुरे सियाबट्टा पर पके टमाटर, तुलसी और जैतून का तेल।",
+          "Roasted Pumpkin Soup": "भुनी हुई कद्दू सूप",
+          "Roasted Pumpkin Soup_desc": "जायफल और क्रीम की झलक के साथ मखमली कद्दू।",
+          // Menu items - Mains
+          "Citrus Glazed Salmon": "साइट्रस ग्लेज़्ड सैल्मन",
+          "Citrus Glazed Salmon_desc": "नारंगी ग्लेज़ के साथ पैन-सीयर सैल्मन, हरी सब्जियों के साथ परोसा जाता है।",
+          "Grilled Chicken Alfredo": "ग्रिल्ड चिकन अल्फ्रेडो",
+          "Grilled Chicken Alfredo_desc": "ग्रिल्ड चिकन के साथ क्रीमी सॉस में टॉस किया गया फेटुसिनी।",
+          "Margherita Pizza": "मार्गेरिटा पिज्जा",
+          "Margherita Pizza_desc": "सैन मार्ज़ानो टमाटर, ताजा मोज़ेरेला और तुलसी।",
+          "Veggie Power Bowl": "वेजी पावर बाउल",
+          "Veggie Power Bowl_desc": "क्विनोआ, भुनी हुई सब्जियां, छोले, एवोकाडो, नींबू ताहिनी।",
+          // Menu items - Desserts
+          "Classic Tiramisu": "क्लासिक टिरामिसु",
+          "Classic Tiramisu_desc": "मस्कारपोन और कोको के साथ एस्प्रेसो-सोखा लेडीफिंगर्स।",
+          "Warm Apple Crumble": "गर्म सेब क्रंबल",
+          "Warm Apple Crumble_desc": "मक्खन क्रंबल के साथ मसालेदार सेब, वेनिला के साथ परोसा जाता है।",
+          "Lemon Cheesecake": "नींबू चीज़केक",
+          "Lemon Cheesecake_desc": "उज्ज्वल नींबू ज़ेस्ट और दही के साथ रेशमी चीज़केक।"
+        }
+      };
+
+      // Language management
+      let currentLanguage = localStorage.getItem('restaurant_language') || 'en';
+
+      function setLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('restaurant_language', lang);
+        
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+          const key = element.getAttribute('data-i18n');
+          if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+          }
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+          const key = element.getAttribute('data-i18n-placeholder');
+          if (translations[lang] && translations[lang][key]) {
+            element.placeholder = translations[lang][key];
+          }
+        });
+
+        // Update language selector
+        const langSelect = document.getElementById('language-select');
+        if (langSelect) langSelect.value = lang;
+        
+        // Update all "Add to order" buttons in menu items (including dynamically created ones)
+        // First, update all buttons with the data-i18n attribute
+        document.querySelectorAll('.item-cta[data-i18n="addToOrder"]').forEach(btn => {
+          btn.textContent = getTranslation('addToOrder');
+        });
+        
+        // Also find and update any "Add to order" buttons by their text content
+        // This catches buttons that might have been created before language was set
+        const allItemButtons = document.querySelectorAll('.item-cta');
+        const addToOrderTexts = {
+          en: 'Add to order',
+          te: 'ఆర్డర్‌కు జోడించండి',
+          hi: 'ऑर्डर में जोड़ें'
+        };
+        
+        allItemButtons.forEach(btn => {
+          const currentText = btn.textContent.trim();
+          // Check if button text matches any language version of "Add to order"
+          if (Object.values(addToOrderTexts).some(text => currentText === text)) {
+            btn.setAttribute('data-i18n', 'addToOrder');
+            btn.textContent = getTranslation('addToOrder');
+          }
+        });
+        
+        // Update menu item names and descriptions
+        document.querySelectorAll('[data-i18n-item-name]').forEach(element => {
+          const originalName = element.getAttribute('data-i18n-item-name');
+          const translatedName = getTranslation(originalName);
+          if (translatedName) {
+            element.textContent = translatedName;
+          }
+        });
+        
+        document.querySelectorAll('[data-i18n-item-desc]').forEach(element => {
+          const originalName = element.getAttribute('data-i18n-item-desc');
+          const descKey = originalName + "_desc";
+          const translatedDesc = getTranslation(descKey);
+          if (translatedDesc) {
+            element.textContent = translatedDesc;
+          }
+        });
+      }
+
+      function getTranslation(key) {
+        return translations[currentLanguage]?.[key] || translations.en[key] || key;
+      }
 
       function text(node) {
         return node?.textContent?.trim() ?? "";
@@ -167,6 +453,8 @@
         const li = document.createElement("li");
         li.className = "menu-item";
         li.tabIndex = 0;
+        // Store original name for translation lookup
+        li.setAttribute("data-original-name", name);
 
         if (imageUrl) {
           const media = document.createElement("div");
@@ -182,7 +470,8 @@
 
         const title = document.createElement("div");
         title.className = "item-name";
-        title.textContent = name;
+        title.setAttribute("data-i18n-item-name", name);
+        title.textContent = getTranslation(name) || name;
 
         const trailing = document.createElement("div");
         trailing.className = "item-price";
@@ -190,13 +479,16 @@
 
         const desc = document.createElement("p");
         desc.className = "item-desc";
-        desc.textContent = description;
+        desc.setAttribute("data-i18n-item-desc", name);
+        const descKey = name + "_desc";
+        desc.textContent = getTranslation(descKey) || description;
 
         // CTA
         const cta = document.createElement("button");
         cta.className = "item-cta ripple-container";
         cta.type = "button";
-        cta.textContent = "Add to order";
+        cta.setAttribute("data-i18n", "addToOrder");
+        cta.textContent = getTranslation("addToOrder");
         cta.addEventListener("click", (e) => {
           incrementCart(name, priceValue);
           spawnRipple(e, cta);
@@ -242,6 +534,10 @@
           renderCategory(xmlDoc, "mains", "mains");
           renderCategory(xmlDoc, "desserts", "desserts");
           setupReveal();
+          // Ensure all menu item buttons use the current language
+          document.querySelectorAll('.item-cta[data-i18n="addToOrder"]').forEach(btn => {
+            btn.textContent = getTranslation('addToOrder');
+          });
           status.textContent = "";
         } catch (err) {
           status.textContent = "Could not load the menu. Please try opening via a local server.";
@@ -326,6 +622,96 @@
       // Cart management
       let cart = []; // Array of { name, price, quantity, priceValue }
 
+      function isOrderModalVisible() {
+        const modal = document.getElementById("order-modal");
+        return modal && !modal.classList.contains("hidden");
+      }
+
+      function renderCartContents() {
+        const cartContents = document.getElementById("cart-contents");
+        const itemCountEl = document.getElementById("modal-item-count");
+        const totalEl = document.getElementById("modal-total");
+        if (!cartContents || !itemCountEl || !totalEl) return;
+
+        if (cart.length === 0) {
+          cartContents.innerHTML = '<p style="text-align: center; color: var(--ink-dim); padding: 20px;">Your cart is empty. Add some items to your order!</p>';
+          itemCountEl.textContent = "0";
+          totalEl.textContent = currency.format(0);
+          return;
+        }
+
+        const cartList = document.createElement("ul");
+        cartList.className = "cart-list";
+
+        cart.forEach(item => {
+          const li = document.createElement("li");
+          li.className = "cart-item";
+
+          const itemTotal = item.priceValue * item.quantity;
+          const topRow = document.createElement("div");
+          topRow.className = "cart-item-top";
+
+          const info = document.createElement("div");
+          info.className = "cart-item-info";
+
+          const nameEl = document.createElement("span");
+          nameEl.className = "cart-item-name";
+          nameEl.textContent = item.name;
+          info.appendChild(nameEl);
+
+          const priceEl = document.createElement("div");
+          priceEl.className = "cart-item-price";
+          priceEl.textContent = currency.format(itemTotal);
+
+          topRow.appendChild(info);
+          topRow.appendChild(priceEl);
+          li.appendChild(topRow);
+
+          const controls = document.createElement("div");
+          controls.className = "cart-item-controls";
+
+          const decreaseBtn = document.createElement("button");
+          decreaseBtn.type = "button";
+          decreaseBtn.className = "cart-control-btn cart-decrease-btn";
+          decreaseBtn.setAttribute("aria-label", `Decrease quantity of ${item.name}`);
+          decreaseBtn.textContent = "−";
+          decreaseBtn.addEventListener("click", () => adjustCartItem(item.name, -1));
+
+          const quantityEl = document.createElement("span");
+          quantityEl.className = "cart-item-quantity";
+          quantityEl.textContent = `Qty: ${item.quantity}`;
+
+          const increaseBtn = document.createElement("button");
+          increaseBtn.type = "button";
+          increaseBtn.className = "cart-control-btn cart-increase-btn";
+          increaseBtn.setAttribute("aria-label", `Increase quantity of ${item.name}`);
+          increaseBtn.textContent = "+";
+          increaseBtn.addEventListener("click", () => adjustCartItem(item.name, 1));
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "cart-control-btn cart-remove-btn";
+          removeBtn.textContent = "Remove";
+          removeBtn.addEventListener("click", () => removeCartItem(item.name));
+
+          controls.appendChild(decreaseBtn);
+          controls.appendChild(quantityEl);
+          controls.appendChild(increaseBtn);
+          controls.appendChild(removeBtn);
+
+          li.appendChild(controls);
+          cartList.appendChild(li);
+        });
+
+        cartContents.innerHTML = "";
+        cartContents.appendChild(cartList);
+
+        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalAmount = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
+        itemCountEl.textContent = String(totalCount);
+        totalEl.textContent = currency.format(totalAmount);
+      }
+
       function incrementCart(itemName, priceValue) {
         const existing = cart.find(item => item.name === itemName);
         if (existing) {
@@ -334,6 +720,9 @@
           cart.push({ name: itemName, price: currency.format(priceValue), quantity: 1, priceValue: priceValue });
         }
         updateCartDisplay();
+        if (isOrderModalVisible()) {
+          renderCartContents();
+        }
         const status = document.getElementById("status");
         if (status) {
           status.textContent = `Added "${itemName}" to order.`;
@@ -350,51 +739,57 @@
         if (total) total.textContent = currency.format(cartTotal);
       }
 
+      function adjustCartItem(itemName, delta) {
+        const index = cart.findIndex(item => item.name === itemName);
+        if (index === -1) return;
+        const newQty = cart[index].quantity + delta;
+        if (newQty <= 0) {
+          removeCartItem(itemName);
+          return;
+        }
+        cart[index].quantity = newQty;
+        updateCartDisplay();
+        if (isOrderModalVisible()) {
+          renderCartContents();
+        }
+      }
+
+      function removeCartItem(itemName) {
+        const index = cart.findIndex(item => item.name === itemName);
+        if (index === -1) return;
+        cart.splice(index, 1);
+        updateCartDisplay();
+        const status = document.getElementById("status");
+        if (status) {
+          status.textContent = `Removed "${itemName}" from order.`;
+          setTimeout(() => { if (status.textContent?.includes(itemName)) status.textContent = ""; }, 1500);
+        }
+        if (isOrderModalVisible()) {
+          renderCartContents();
+        }
+      }
+
       function showOrderModal() {
         const modal = document.getElementById("order-modal");
         if (!modal) return;
         modal.classList.remove("hidden");
         document.body.style.overflow = "hidden";
-
-        const cartContents = document.getElementById("cart-contents");
-        const itemCountEl = document.getElementById("modal-item-count");
-        const totalEl = document.getElementById("modal-total");
-
-        if (cart.length === 0) {
-          cartContents.innerHTML = '<p style="text-align: center; color: var(--ink-dim); padding: 20px;">Your cart is empty. Add some items to your order!</p>';
-          if (itemCountEl) itemCountEl.textContent = "0";
-          if (totalEl) totalEl.textContent = currency.format(0);
-          return;
-        }
-
-        const cartList = document.createElement("ul");
-        cartList.className = "cart-list";
-        cart.forEach(item => {
-          const li = document.createElement("li");
-          li.className = "cart-item";
-          const itemTotal = item.priceValue * item.quantity;
-          li.innerHTML = `
-            <div class="cart-item-info">
-              <span class="cart-item-name">${item.name}</span>
-              <span class="cart-item-quantity">Qty: ${item.quantity}</span>
-            </div>
-            <div class="cart-item-price">${currency.format(itemTotal)}</div>
-          `;
-          cartList.appendChild(li);
-        });
-        cartContents.innerHTML = "";
-        cartContents.appendChild(cartList);
-
-        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-        const totalAmount = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
-        if (itemCountEl) itemCountEl.textContent = String(totalCount);
-        if (totalEl) totalEl.textContent = currency.format(totalAmount);
+        renderCartContents();
       }
 
       function hideOrderModal() {
         const modal = document.getElementById("order-modal");
         if (modal) modal.classList.add("hidden");
         document.body.style.overflow = "";
+      }
+
+      function generateOrderId() {
+        if (typeof crypto !== "undefined" && crypto.randomUUID) {
+          return crypto.randomUUID();
+        }
+        const timestamp = Date.now().toString(36);
+        const random = Math.random().toString(36).slice(2, 8);
+        return `ORD-${timestamp}-${random}`.toUpperCase();
       }
 
       function finalizeOrder() {
@@ -409,12 +804,26 @@
           alert("Please select an order type!");
           return;
         }
+        const customerInput = document.getElementById("customer-name");
+        const customerName = customerInput?.value.trim() || "Guest";
         const totalAmount = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
         const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const orderDetails = {
+          id: generateOrderId(),
+          customerName,
+          type: orderType,
+          items: cart.map(i => ({ name: i.name, qty: i.quantity, price: i.priceValue })),
+          itemCount: totalCount,
+          total: totalAmount,
+          createdAt: new Date().toISOString()
+        };
+        saveOrderToLocal(orderDetails);
+        appendOrderToCsv(orderDetails);
         alert(`Order finalized!\n\n📋 Order Type: ${orderType}\n📦 Items: ${totalCount}\n💰 Total: ${currency.format(totalAmount)}\n\nThank you for your order!`);
         cart = [];
         updateCartDisplay();
         orderTypeInput.value = "";
+        if (customerInput) customerInput.value = "";
         document.querySelectorAll(".order-type-btn").forEach(btn => btn.classList.remove("active"));
         hideOrderModal();
         const status = document.getElementById("status");
@@ -424,11 +833,174 @@
         }
       }
 
+      // LocalStorage helpers for demo orders
+      function getSavedOrders() {
+        try {
+          const raw = localStorage.getItem('demo_orders');
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.error('Failed to parse saved orders', e);
+          return [];
+        }
+      }
+
+      function saveOrderToLocal(order) {
+        try {
+          const all = getSavedOrders();
+          all.unshift(order); // most recent first
+          localStorage.setItem('demo_orders', JSON.stringify(all));
+          const status = document.getElementById('status');
+          if (status) {
+            status.textContent = 'Order saved to demo storage.';
+            setTimeout(() => { status.textContent = ''; }, 2500);
+          }
+        } catch (e) {
+          console.error('Unable to save order', e);
+        }
+      }
+
+      function ordersToCsv(orders) {
+        const escape = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+        const header = ["Order ID", "Customer Name", "Order Type", "Item Count", "Total", "Created At", "Items"];
+        const rows = orders.map(order => {
+          const itemsSummary = (order.items ?? []).map(it => `${it.name} x${it.qty} @ ${it.price != null ? it.price.toFixed(2) : ""}`).join(" | ");
+          return [
+            order.id ?? "",
+            order.customerName ?? "",
+            order.type ?? "",
+            order.itemCount ?? 0,
+            order.total != null ? order.total.toFixed(2) : "",
+            order.createdAt ? new Date(order.createdAt).toLocaleString() : "",
+            itemsSummary
+          ];
+        });
+        const csvLines = [header.map(escape).join(",")];
+        rows.forEach(row => csvLines.push(row.map(escape).join(",")));
+        return csvLines.join("\r\n");
+      }
+
+      const GLOBAL_ORDER_CSV_KEY = 'demo_orders_csv';
+
+      function appendOrderToCsv(order) {
+        const existing = localStorage.getItem(GLOBAL_ORDER_CSV_KEY);
+        let csv = existing ?? "";
+        const escape = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+        const formatRow = (row) => row.map(escape).join(",");
+
+        if (!existing) {
+          const header = ["Order ID", "Customer Name", "Order Type", "Item Count", "Total", "Created At", "Items"];
+          csv += formatRow(header) + "\r\n";
+        }
+
+        const itemsSummary = (order.items ?? []).map(it => `${it.name} x${it.qty} @ ${currency.format(it.price)}`).join(" | ");
+        const row = [
+          order.id ?? "",
+          order.customerName ?? "",
+          order.type ?? "",
+          order.itemCount ?? 0,
+          order.total != null ? order.total.toFixed(2) : "",
+          order.createdAt ? new Date(order.createdAt).toLocaleString() : "",
+          itemsSummary
+        ];
+        csv += formatRow(row) + "\r\n";
+        localStorage.setItem(GLOBAL_ORDER_CSV_KEY, csv);
+      }
+
+      function downloadOrdersCsvFile() {
+        const csv = localStorage.getItem(GLOBAL_ORDER_CSV_KEY);
+        if (!csv) {
+          alert("No orders have been finalized yet.");
+          return;
+        }
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "restaurant-orders.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      function getFilteredOrders() {
+        const orders = getSavedOrders();
+        const orderTypeFilter = document.getElementById('filter-order-type')?.value || '';
+        const customerFilter = (document.getElementById('filter-customer')?.value || '').toLowerCase().trim();
+        const dateFilter = document.getElementById('filter-date')?.value || '';
+
+        return orders.filter(order => {
+          if (orderTypeFilter && order.type !== orderTypeFilter) return false;
+          if (customerFilter && (!order.customerName || !order.customerName.toLowerCase().includes(customerFilter))) return false;
+          if (dateFilter) {
+            const orderDate = order.createdAt ? new Date(order.createdAt).toISOString().split('T')[0] : '';
+            if (orderDate !== dateFilter) return false;
+          }
+          return true;
+        });
+      }
+
+      function renderSavedOrders() {
+        const container = document.getElementById('saved-orders-contents');
+        if (!container) return;
+        const orders = getFilteredOrders();
+        
+        if (!orders.length) {
+          container.innerHTML = '<p style="color:var(--ink-dim); text-align:center; padding:40px;">No orders found. Try adjusting your filters.</p>';
+          return;
+        }
+
+        const tableHTML = `
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Order Type</th>
+                <th>Items</th>
+                <th>Item Count</th>
+                <th>Total</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${orders.map(o => {
+                const ts = o.createdAt ? new Date(o.createdAt).toLocaleString() : "";
+                const itemsSummary = (o.items || []).map(it => `${it.name} (${it.qty})`).join(', ');
+                return `
+                  <tr>
+                    <td><code>${o.id || 'N/A'}</code></td>
+                    <td>${o.customerName || 'Guest'}</td>
+                    <td><span class="order-type-badge order-type-${o.type?.toLowerCase().replace('-', '') || ''}">${o.type || 'N/A'}</span></td>
+                    <td class="items-cell">${itemsSummary || 'N/A'}</td>
+                    <td>${o.itemCount || 0}</td>
+                    <td class="total-cell"><strong>${currency.format(o.total || 0)}</strong></td>
+                    <td>${ts}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+        container.innerHTML = tableHTML;
+      }
+
       document.getElementById("year").textContent = new Date().getFullYear();
       // initialize header total formatting once currency is ready
       const totalSpan = document.getElementById("cart-total");
       if (totalSpan) totalSpan.textContent = currency.format(0);
       window.addEventListener("DOMContentLoaded", () => {
+        // Initialize language
+        setLanguage(currentLanguage);
+        
+        // Language selector event listener
+        const langSelect = document.getElementById('language-select');
+        if (langSelect) {
+          langSelect.addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+          });
+        }
+        
         loadMenu().then(() => {
           wireFilters();
           
@@ -472,12 +1044,68 @@
             });
           }
 
-          // Close modal on Escape key
+          // Saved orders modal handlers
+          const viewSavedBtn = document.getElementById('view-saved-orders');
+          const savedModal = document.getElementById('saved-orders-modal');
+          const savedClose = document.getElementById('saved-modal-close');
+          const savedCloseBtn = document.getElementById('close-saved-orders');
+          const clearSaved = document.getElementById('clear-saved-orders');
+        const downloadOrdersBtn = document.getElementById('download-orders');
+        const managerOrdersBtn = document.getElementById('manager-orders');
+        const openSavedOrders = () => {
+          if (!savedModal) return;
+              renderSavedOrders();
+              savedModal.classList.remove('hidden');
+              document.body.style.overflow = 'hidden';
+        };
+        if (viewSavedBtn && savedModal) {
+          viewSavedBtn.addEventListener('click', openSavedOrders);
+          }
+        if (managerOrdersBtn) managerOrdersBtn.addEventListener('click', openSavedOrders);
+        document.addEventListener('keydown', (e) => {
+          if (e.altKey && e.shiftKey && e.key.toLowerCase() === 'o') {
+            e.preventDefault();
+            openSavedOrders();
+          }
+        });
+          if (savedClose) savedClose.addEventListener('click', () => { savedModal.classList.add('hidden'); document.body.style.overflow = ''; });
+          if (savedCloseBtn) savedCloseBtn.addEventListener('click', () => { savedModal.classList.add('hidden'); document.body.style.overflow = ''; });
+        if (clearSaved) clearSaved.addEventListener('click', () => {
+          localStorage.removeItem('demo_orders');
+          localStorage.removeItem(GLOBAL_ORDER_CSV_KEY);
+          renderSavedOrders();
+        });
+        if (downloadOrdersBtn) downloadOrdersBtn.addEventListener('click', downloadOrdersCsvFile);
+
+          // Filter event listeners
+          const filterOrderType = document.getElementById('filter-order-type');
+          const filterCustomer = document.getElementById('filter-customer');
+          const filterDate = document.getElementById('filter-date');
+          const resetFiltersBtn = document.getElementById('reset-filters');
+
+          if (filterOrderType) filterOrderType.addEventListener('change', renderSavedOrders);
+          if (filterCustomer) filterCustomer.addEventListener('input', renderSavedOrders);
+          if (filterDate) filterDate.addEventListener('change', renderSavedOrders);
+          if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener('click', () => {
+              if (filterOrderType) filterOrderType.value = '';
+              if (filterCustomer) filterCustomer.value = '';
+              if (filterDate) filterDate.value = '';
+              renderSavedOrders();
+            });
+          }
+
+          // Close modal on Escape key (both modals)
           document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
-              const modal = document.getElementById("order-modal");
-              if (modal && !modal.classList.contains("hidden")) {
+              const modalEl = document.getElementById("order-modal");
+              if (modalEl && !modalEl.classList.contains("hidden")) {
                 hideOrderModal();
+              }
+              const sm = document.getElementById('saved-orders-modal');
+              if (sm && !sm.classList.contains('hidden')) {
+                sm.classList.add('hidden');
+                document.body.style.overflow = '';
               }
             }
           });

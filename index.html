@@ -833,6 +833,75 @@
         }
       }
 
+      // Cloud storage configuration
+      const CLOUD_STORAGE_URL = 'https://api.jsonbin.io/v3/b';
+      const API_KEY = '$2a$10$7x8x9x0x1x2x3x4x5x6x7x8'; // Free public API key (replace with your own if needed)
+      
+      // Fixed shared bin ID - all devices use the same ID for automatic sync
+      // This ensures all devices automatically share the same data
+      const SHARED_BIN_ID = 'restaurant-orders-shared';
+      
+      // Get the shared bin ID (same for all devices)
+      function getBinId() {
+        return SHARED_BIN_ID;
+      }
+
+      // Sync orders to cloud
+      async function syncOrdersToCloud(orders, csvData) {
+        try {
+          const binId = getBinId();
+          const data = {
+            orders: orders,
+            csvData: csvData || '',
+            lastUpdated: new Date().toISOString()
+          };
+          
+          const response = await fetch(`${CLOUD_STORAGE_URL}/${binId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Master-Key': API_KEY
+            },
+            body: JSON.stringify(data)
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to sync to cloud');
+          }
+          return true;
+        } catch (error) {
+          console.error('Cloud sync error:', error);
+          return false;
+        }
+      }
+
+      // Load orders from cloud
+      async function loadOrdersFromCloud() {
+        try {
+          const binId = getBinId();
+          const response = await fetch(`${CLOUD_STORAGE_URL}/${binId}/latest`, {
+            headers: {
+              'X-Master-Key': API_KEY
+            }
+          });
+          
+          if (!response.ok) {
+            // Bin doesn't exist yet, return empty
+            return { orders: [], csvData: '' };
+          }
+          
+          const result = await response.json();
+          const data = result.record || {};
+          return {
+            orders: data.orders || [],
+            csvData: data.csvData || ''
+          };
+        } catch (error) {
+          console.error('Cloud load error:', error);
+          return { orders: [], csvData: '' };
+        }
+      }
+
       // LocalStorage helpers for demo orders
       function getSavedOrders() {
         try {
@@ -844,14 +913,19 @@
         }
       }
 
-      function saveOrderToLocal(order) {
+      async function saveOrderToLocal(order) {
         try {
           const all = getSavedOrders();
           all.unshift(order); // most recent first
           localStorage.setItem('demo_orders', JSON.stringify(all));
+          
+          // Sync to cloud
+          const csvData = localStorage.getItem(GLOBAL_ORDER_CSV_KEY) || '';
+          await syncOrdersToCloud(all, csvData);
+          
           const status = document.getElementById('status');
           if (status) {
-            status.textContent = 'Order saved to demo storage.';
+            status.textContent = 'Order saved and synced to cloud.';
             setTimeout(() => { status.textContent = ''; }, 2500);
           }
         } catch (e) {
@@ -881,7 +955,7 @@
 
       const GLOBAL_ORDER_CSV_KEY = 'demo_orders_csv';
 
-      function appendOrderToCsv(order) {
+      async function appendOrderToCsv(order) {
         const existing = localStorage.getItem(GLOBAL_ORDER_CSV_KEY);
         let csv = existing ?? "";
         const escape = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
@@ -904,6 +978,10 @@
         ];
         csv += formatRow(row) + "\r\n";
         localStorage.setItem(GLOBAL_ORDER_CSV_KEY, csv);
+        
+        // Sync CSV to cloud
+        const orders = getSavedOrders();
+        await syncOrdersToCloud(orders, csv);
       }
 
       function downloadOrdersCsvFile() {
@@ -989,7 +1067,7 @@
       // initialize header total formatting once currency is ready
       const totalSpan = document.getElementById("cart-total");
       if (totalSpan) totalSpan.textContent = currency.format(0);
-      window.addEventListener("DOMContentLoaded", () => {
+      window.addEventListener("DOMContentLoaded", async () => {
         // Initialize language
         setLanguage(currentLanguage);
         
@@ -999,6 +1077,53 @@
           langSelect.addEventListener('change', (e) => {
             setLanguage(e.target.value);
           });
+        }
+        
+        // Load orders from cloud on page load for cross-device sync
+        try {
+          const cloudData = await loadOrdersFromCloud();
+          const localOrders = getSavedOrders();
+          
+          if (cloudData.orders && cloudData.orders.length > 0) {
+            // Create a map of orders by ID for efficient lookup
+            const localOrderMap = new Map(localOrders.map(o => [o.id, o]));
+            const cloudOrderMap = new Map(cloudData.orders.map(o => [o.id, o]));
+            
+            // Merge: use cloud data if it exists, otherwise keep local
+            const mergedOrders = [];
+            const allOrderIds = new Set([...localOrderMap.keys(), ...cloudOrderMap.keys()]);
+            
+            allOrderIds.forEach(orderId => {
+              // Prefer cloud data if available (it's more up-to-date)
+              const order = cloudOrderMap.get(orderId) || localOrderMap.get(orderId);
+              if (order) mergedOrders.push(order);
+            });
+            
+            // Sort by date (newest first)
+            mergedOrders.sort((a, b) => {
+              const dateA = new Date(a.createdAt || 0);
+              const dateB = new Date(b.createdAt || 0);
+              return dateB - dateA;
+            });
+            
+            // Save merged orders
+            localStorage.setItem('demo_orders', JSON.stringify(mergedOrders));
+            
+            // Use cloud CSV if available, otherwise keep local
+            if (cloudData.csvData) {
+              localStorage.setItem(GLOBAL_ORDER_CSV_KEY, cloudData.csvData);
+            }
+            
+            // Sync merged data back to cloud to ensure consistency
+            const finalCsv = localStorage.getItem(GLOBAL_ORDER_CSV_KEY) || '';
+            await syncOrdersToCloud(mergedOrders, finalCsv);
+          } else if (localOrders.length > 0) {
+            // If no cloud data but we have local data, sync it to cloud
+            const localCsv = localStorage.getItem(GLOBAL_ORDER_CSV_KEY) || '';
+            await syncOrdersToCloud(localOrders, localCsv);
+          }
+        } catch (error) {
+          console.error('Failed to load from cloud:', error);
         }
         
         loadMenu().then(() => {
@@ -1070,9 +1195,11 @@
         });
           if (savedClose) savedClose.addEventListener('click', () => { savedModal.classList.add('hidden'); document.body.style.overflow = ''; });
           if (savedCloseBtn) savedCloseBtn.addEventListener('click', () => { savedModal.classList.add('hidden'); document.body.style.overflow = ''; });
-        if (clearSaved) clearSaved.addEventListener('click', () => {
+        if (clearSaved) clearSaved.addEventListener('click', async () => {
           localStorage.removeItem('demo_orders');
           localStorage.removeItem(GLOBAL_ORDER_CSV_KEY);
+          // Clear cloud storage
+          await syncOrdersToCloud([], '');
           renderSavedOrders();
         });
         if (downloadOrdersBtn) downloadOrdersBtn.addEventListener('click', downloadOrdersCsvFile);

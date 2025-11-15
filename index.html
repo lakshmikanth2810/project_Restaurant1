@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -35,6 +37,10 @@
                 <option value="hi">हिंदी (Hindi)</option>
               </select>
             </div>
+            <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+              <span class="theme-toggle-icon">🌙</span>
+              <span class="theme-toggle-text">Dark</span>
+            </button>
           </div>
         </div>
         <p class="tagline" data-i18n="tagline">🌟 Fresh • Warm • Delicious 🌟</p>
@@ -43,12 +49,12 @@
     </header>
 
     <main class="container">
-      <section class="intro-section">
+      <section class="intro-section fade-section" style="--fade-delay: 80ms;">
         <h2 class="intro-title" data-i18n="welcomeTitle">Welcome to Our Restaurant</h2>
         <p class="intro-text" data-i18n="welcomeText">Discover our carefully curated menu featuring the finest ingredients sourced locally. Each dish is prepared by our expert chefs with attention to detail and passion for excellence. Whether you're looking for a quick bite or a full dining experience, we have something special for you.</p>
       </section>
 
-      <nav class="filter-bar" aria-label="Filter menu categories">
+      <nav class="filter-bar fade-section" aria-label="Filter menu categories" style="--fade-delay: 160ms;">
         <button class="filter-btn is-active" data-filter="all" type="button">
           <span class="filter-icon">🍽️</span>
           <span class="filter-label" data-i18n="allMenu">All Menu</span>
@@ -67,21 +73,21 @@
         </button>
       </nav>
 
-      <section class="menu-section" id="starters-section">
+      <section class="menu-section fade-section" id="starters-section" style="--fade-delay: 240ms;">
         <h2 class="section-title">
           <button class="pill pill-starters linklike" data-filter="starters" type="button"><span data-i18n="startersSection">🥗 Starters</span></button>
         </h2>
         <ul id="starters" class="menu-grid" aria-live="polite"></ul>
       </section>
 
-      <section class="menu-section" id="mains-section">
+      <section class="menu-section fade-section" id="mains-section" style="--fade-delay: 320ms;">
         <h2 class="section-title">
           <button class="pill pill-mains linklike" data-filter="mains" type="button"><span data-i18n="mainCoursesSection">🍝 Main Courses</span></button>
         </h2>
         <ul id="mains" class="menu-grid" aria-live="polite"></ul>
       </section>
 
-      <section class="menu-section" id="desserts-section">
+      <section class="menu-section fade-section" id="desserts-section" style="--fade-delay: 400ms;">
         <h2 class="section-title">
           <button class="pill pill-desserts linklike" data-filter="desserts" type="button"><span data-i18n="dessertsSection">🍰 Desserts</span></button>
         </h2>
@@ -91,7 +97,7 @@
       <div id="status" class="status" role="status" aria-live="polite"></div>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer fade-section" style="--fade-delay: 480ms;">
       <div class="container">
         <div class="footer-content">
           <div class="footer-section">
@@ -119,6 +125,7 @@
     </footer>
 
     <div class="manager-access" aria-hidden="true">
+      <button id="admin-dashboard" class="manager-btn" type="button" title="Admin Dashboard">📈</button>
       <button id="manager-orders" class="manager-btn" type="button" title="Manager orders">📊</button>
     </div>
 
@@ -163,9 +170,143 @@
             </div>
             <input type="hidden" id="order-type" value="">
           </div>
+          <div class="payment-method-section">
+            <label><strong data-i18n="paymentMethod">Payment Method</strong></label>
+            <div class="payment-method-buttons">
+              <button type="button" class="payment-method-btn" data-method="Online">
+                <span class="payment-method-icon">💳</span>
+                <span class="payment-method-label" data-i18n="onlinePayment">Online Payment</span>
+              </button>
+              <button type="button" class="payment-method-btn" data-method="Offline">
+                <span class="payment-method-icon">💵</span>
+                <span class="payment-method-label" data-i18n="offlinePayment">Offline Payment</span>
+              </button>
+            </div>
+            <input type="hidden" id="payment-method" value="">
+          </div>
           <div class="modal-actions">
             <button id="finalize-order" class="primary-cta" type="button" data-i18n="finalizeOrder">Finalize Order</button>
             <button id="cancel-order" class="secondary-btn" type="button" data-i18n="cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal-overlay hidden" role="dialog" aria-labelledby="payment-modal-title" aria-modal="true">
+      <div class="modal payment-modal">
+        <div class="modal-header">
+          <h2 id="payment-modal-title" class="modal-title" data-i18n="paymentTitle">Complete Payment</h2>
+          <button class="modal-close payment-modal-close" type="button" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="payment-info">
+            <div class="payment-amount-section">
+              <p class="payment-label" data-i18n="amountToPay">Amount to Pay</p>
+              <p class="payment-amount" id="payment-amount">$0.00</p>
+            </div>
+            <div class="qr-code-container">
+              <p class="qr-instruction" data-i18n="scanToPay">Scan the QR code to pay</p>
+              <div id="qrcode" class="qrcode-wrapper"></div>
+              <p class="qr-note" data-i18n="paymentNote">Please complete the payment to confirm your order</p>
+            </div>
+            <div class="payment-status" id="payment-status">
+              <div class="payment-status-icon">⏳</div>
+              <p class="payment-status-text" data-i18n="waitingPayment">Waiting for payment...</p>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button id="confirm-payment" class="primary-cta" type="button" data-i18n="confirmPayment">Confirm Payment</button>
+            <button id="cancel-payment" class="secondary-btn" type="button" data-i18n="cancelPayment">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="admin-dashboard-modal" class="modal-overlay hidden" role="dialog" aria-labelledby="dashboard-modal-title" aria-modal="true">
+      <div class="modal dashboard-modal-large">
+        <div class="modal-header dashboard-header">
+          <h2 id="dashboard-modal-title" class="modal-title" data-i18n="adminDashboard">📈 Admin Dashboard</h2>
+          <div class="dashboard-header-actions">
+            <div class="language-selector">
+              <select id="dashboard-language-select" class="language-dropdown">
+                <option value="en">English</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="hi">हिंदी (Hindi)</option>
+              </select>
+            </div>
+            <button id="dashboard-theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+              <span class="theme-toggle-icon">🌙</span>
+              <span class="theme-toggle-text">Dark</span>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body dashboard-body">
+          <div class="dashboard-stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">💰</div>
+              <div class="stat-content">
+                <h3 class="stat-label" data-i18n="totalRevenue">Total Revenue</h3>
+                <p class="stat-value" id="stat-total-revenue">$0.00</p>
+                <p class="stat-change positive" data-i18n="fromLastPeriod">+0% from last period</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📦</div>
+              <div class="stat-content">
+                <h3 class="stat-label" data-i18n="totalOrders">Total Orders</h3>
+                <p class="stat-value" id="stat-total-orders">0</p>
+                <p class="stat-change positive" data-i18n="ordersCount">+0 orders</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-content">
+                <h3 class="stat-label" data-i18n="totalCustomers">Total Customers</h3>
+                <p class="stat-value" id="stat-total-customers">0</p>
+                <p class="stat-change positive" data-i18n="uniqueCustomers">+0 unique customers</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <div class="stat-content">
+                <h3 class="stat-label" data-i18n="avgOrderValue">Average Order Value</h3>
+                <p class="stat-value" id="stat-avg-order">$0.00</p>
+                <p class="stat-change" data-i18n="basedOnAllOrders">Based on all orders</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-charts-grid">
+            <div class="chart-card">
+              <h3 class="chart-title" data-i18n="revenueOverTime">Revenue Over Time</h3>
+              <canvas id="revenue-chart"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3 class="chart-title" data-i18n="ordersByType">Orders by Type</h3>
+              <canvas id="orders-type-chart"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3 class="chart-title" data-i18n="paymentMethods">Payment Methods</h3>
+              <canvas id="payment-method-chart"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3 class="chart-title" data-i18n="topSellingItems">Top Selling Items</h3>
+              <canvas id="top-items-chart"></canvas>
+            </div>
+          </div>
+
+          <div class="dashboard-table-section">
+            <h3 class="section-title" data-i18n="recentOrdersSummary">Recent Orders Summary</h3>
+            <div id="dashboard-orders-summary" class="dashboard-orders-list">
+              <!-- Will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="refresh-dashboard" class="primary-cta" type="button" data-i18n="refreshDashboard">🔄 Refresh Dashboard</button>
+            <button id="close-dashboard" class="secondary-btn" type="button" data-i18n="close">Close</button>
           </div>
         </div>
       </div>
@@ -243,6 +384,40 @@
           delivery: "Delivery",
           finalizeOrder: "Finalize Order",
           cancel: "Cancel",
+          ratingLabel: "Rating",
+          paymentMethod: "Payment Method",
+          onlinePayment: "Online Payment",
+          offlinePayment: "Offline Payment",
+          paymentTitle: "Complete Payment",
+          amountToPay: "Amount to Pay",
+          scanToPay: "Scan the QR code to pay",
+          paymentNote: "Please complete the payment to confirm your order",
+          waitingPayment: "Waiting for payment...",
+          confirmPayment: "Confirm Payment",
+          cancelPayment: "Cancel",
+          paymentSuccess: "Payment successful!",
+          paymentFailed: "Payment failed. Please try again.",
+          processingPayment: "Processing payment...",
+          paymentFailedMax: "Payment failed. Maximum attempts reached.",
+          pleaseTryOffline: "Please try offline payment or contact support.",
+          retryPayment: "Retry Payment",
+          // Dashboard translations
+          adminDashboard: "📈 Admin Dashboard",
+          totalRevenue: "Total Revenue",
+          fromLastPeriod: "+0% from last period",
+          totalOrders: "Total Orders",
+          ordersCount: "+0 orders",
+          totalCustomers: "Total Customers",
+          uniqueCustomers: "+0 unique customers",
+          avgOrderValue: "Average Order Value",
+          basedOnAllOrders: "Based on all orders",
+          revenueOverTime: "Revenue Over Time",
+          ordersByType: "Orders by Type",
+          paymentMethods: "Payment Methods",
+          topSellingItems: "Top Selling Items",
+          recentOrdersSummary: "Recent Orders Summary",
+          refreshDashboard: "🔄 Refresh Dashboard",
+          close: "Close",
           // Menu items - Starters
           "Garlic Herb Bread": "Garlic Herb Bread",
           "Garlic Herb Bread_desc": "Toasted baguette with roasted garlic butter and parsley.",
@@ -294,6 +469,40 @@
           delivery: "డెలివరీ",
           finalizeOrder: "ఆర్డర్‌ను అంతిమీకరించండి",
           cancel: "రద్దు చేయండి",
+          ratingLabel: "రేటింగ్",
+          paymentMethod: "చెల్లింపు పద్ధతి",
+          onlinePayment: "ఆన్‌లైన్ చెల్లింపు",
+          offlinePayment: "ఆఫ్‌లైన్ చెల్లింపు",
+          paymentTitle: "చెల్లింపును పూర్తి చేయండి",
+          amountToPay: "చెల్లించాల్సిన మొత్తం",
+          scanToPay: "చెల్లించడానికి QR కోడ్‌ను స్కాన్ చేయండి",
+          paymentNote: "మీ ఆర్డర్‌ను నిర్ధారించడానికి దయచేసి చెల్లింపును పూర్తి చేయండి",
+          waitingPayment: "చెల్లింపు కోసం వేచి ఉంది...",
+          confirmPayment: "చెల్లింపును నిర్ధారించండి",
+          cancelPayment: "రద్దు చేయండి",
+          paymentSuccess: "చెల్లింపు విజయవంతమైంది!",
+          paymentFailed: "చెల్లింపు విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.",
+          processingPayment: "చెల్లింపును ప్రాసెస్ చేస్తోంది...",
+          paymentFailedMax: "చెల్లింపు విఫలమైంది. గరిష్ట ప్రయత్నాలు చేరుకున్నాయి.",
+          pleaseTryOffline: "దయచేసి ఆఫ్‌లైన్ చెల్లింపును ప్రయత్నించండి లేదా మద్దతుకు సంప్రదించండి.",
+          retryPayment: "మళ్లీ ప్రయత్నించండి",
+          // Dashboard translations
+          adminDashboard: "📈 అడ్మిన్ డాష్‌బోర్డ్",
+          totalRevenue: "మొత్తం ఆదాయం",
+          fromLastPeriod: "+0% గత కాలం నుండి",
+          totalOrders: "మొత్తం ఆర్డర్‌లు",
+          ordersCount: "+0 ఆర్డర్‌లు",
+          totalCustomers: "మొత్తం కస్టమర్‌లు",
+          uniqueCustomers: "+0 ప్రత్యేక కస్టమర్‌లు",
+          avgOrderValue: "సగటు ఆర్డర్ విలువ",
+          basedOnAllOrders: "అన్ని ఆర్డర్‌ల ఆధారంగా",
+          revenueOverTime: "కాలక్రమేణా ఆదాయం",
+          ordersByType: "రకం ప్రకారం ఆర్డర్‌లు",
+          paymentMethods: "చెల్లింపు పద్ధతులు",
+          topSellingItems: "అత్యధిక విక్రయాల అంశాలు",
+          recentOrdersSummary: "ఇటీవలి ఆర్డర్‌ల సారాంశం",
+          refreshDashboard: "🔄 డాష్‌బోర్డ్‌ను రిఫ్రెష్ చేయండి",
+          close: "మూసివేయండి",
           // Menu items - Starters
           "Garlic Herb Bread": "వెల్లులి మూలిక రొట్టె",
           "Garlic Herb Bread_desc": "వేయించిన వెల్లులి వెన్న మరియు పార్స్లీతో వేయించిన బాగ్యుట్.",
@@ -345,6 +554,40 @@
           delivery: "डिलीवरी",
           finalizeOrder: "ऑर्डर अंतिम रूप दें",
           cancel: "रद्द करें",
+          ratingLabel: "रेटिंग",
+          paymentMethod: "भुगतान विधि",
+          onlinePayment: "ऑनलाइन भुगतान",
+          offlinePayment: "ऑफलाइन भुगतान",
+          paymentTitle: "भुगतान पूरा करें",
+          amountToPay: "भुगतान करने की राशि",
+          scanToPay: "भुगतान करने के लिए QR कोड स्कैन करें",
+          paymentNote: "कृपया अपना ऑर्डर पुष्टि करने के लिए भुगतान पूरा करें",
+          waitingPayment: "भुगतान की प्रतीक्षा कर रहे हैं...",
+          confirmPayment: "भुगतान की पुष्टि करें",
+          cancelPayment: "रद्द करें",
+          paymentSuccess: "भुगतान सफल!",
+          paymentFailed: "भुगतान विफल। कृपया पुनः प्रयास करें।",
+          processingPayment: "भुगतान प्रसंस्करण...",
+          paymentFailedMax: "भुगतान विफल। अधिकतम प्रयास पूरे हो गए।",
+          pleaseTryOffline: "कृपया ऑफलाइन भुगतान करने का प्रयास करें या सहायता से संपर्क करें।",
+          retryPayment: "पुनः प्रयास करें",
+          // Dashboard translations
+          adminDashboard: "📈 व्यवस्थापक डैशबोर्ड",
+          totalRevenue: "कुल राजस्व",
+          fromLastPeriod: "+0% पिछली अवधि से",
+          totalOrders: "कुल ऑर्डर",
+          ordersCount: "+0 ऑर्डर",
+          totalCustomers: "कुल ग्राहक",
+          uniqueCustomers: "+0 अद्वितीय ग्राहक",
+          avgOrderValue: "औसत ऑर्डर मूल्य",
+          basedOnAllOrders: "सभी ऑर्डर के आधार पर",
+          revenueOverTime: "समय के साथ राजस्व",
+          ordersByType: "प्रकार के अनुसार ऑर्डर",
+          paymentMethods: "भुगतान विधियां",
+          topSellingItems: "शीर्ष बिकने वाली वस्तुएं",
+          recentOrdersSummary: "हाल के ऑर्डर सारांश",
+          refreshDashboard: "🔄 डैशबोर्ड रीफ्रेश करें",
+          close: "बंद करें",
           // Menu items - Starters
           "Garlic Herb Bread": "लहसुन जड़ी बूटी रोटी",
           "Garlic Herb Bread_desc": "भुने हुए लहसुन मक्खन और अजमोद के साथ टोस्टेड बैगुएट।",
@@ -398,6 +641,10 @@
         const langSelect = document.getElementById('language-select');
         if (langSelect) langSelect.value = lang;
         
+        // Update dashboard language selector
+        const dashboardLangSelect = document.getElementById('dashboard-language-select');
+        if (dashboardLangSelect) dashboardLangSelect.value = lang;
+        
         // Update all "Add to order" buttons in menu items (including dynamically created ones)
         // First, update all buttons with the data-i18n attribute
         document.querySelectorAll('.item-cta[data-i18n="addToOrder"]').forEach(btn => {
@@ -445,6 +692,67 @@
         return translations[currentLanguage]?.[key] || translations.en[key] || key;
       }
 
+      // Theme management
+      const THEME_KEY = 'restaurant_theme';
+      let currentTheme = localStorage.getItem(THEME_KEY) || 'light';
+
+      function setTheme(theme) {
+        currentTheme = theme;
+        localStorage.setItem(THEME_KEY, theme);
+        document.body.classList.toggle('dark-theme', theme === 'dark');
+        updateThemeToggleButton();
+      }
+
+      function toggleTheme() {
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(nextTheme);
+      }
+
+      function updateThemeToggleButton() {
+        const btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        const icon = btn.querySelector('.theme-toggle-icon');
+        const label = btn.querySelector('.theme-toggle-text');
+        const isDark = currentTheme === 'dark';
+        btn.setAttribute('aria-pressed', String(isDark));
+        if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+        if (label) label.textContent = isDark ? 'Light' : 'Dark';
+      }
+
+      const ratingsMap = {
+        "Garlic Herb Bread": 4.7,
+        "Tomato Basil Bruschetta": 4.6,
+        "Roasted Pumpkin Soup": 4.4,
+        "Citrus Glazed Salmon": 4.8,
+        "Grilled Chicken Alfredo": 4.5,
+        "Margherita Pizza": 4.9,
+        "Veggie Power Bowl": 4.3,
+        "Classic Tiramisu": 4.8,
+        "Warm Apple Crumble": 4.4,
+        "Lemon Cheesecake": 4.6
+      };
+
+      function getRatingValue(name) {
+        return ratingsMap[name] ?? 4.5;
+      }
+
+      function renderRatingStars(value) {
+        const rounded = Math.round(value * 2) / 2;
+        const fullStars = Math.floor(rounded);
+        const hasHalf = rounded - fullStars === 0.5;
+        let stars = "";
+        for (let i = 1; i <= 5; i++) {
+          if (i <= fullStars) {
+            stars += "★";
+          } else if (hasHalf && i === fullStars + 1) {
+            stars += "☆";
+          } else {
+            stars += "☆";
+          }
+        }
+        return { stars, value: rounded.toFixed(1) };
+      }
+
       function text(node) {
         return node?.textContent?.trim() ?? "";
       }
@@ -483,6 +791,14 @@
         const descKey = name + "_desc";
         desc.textContent = getTranslation(descKey) || description;
 
+        const ratingValue = getRatingValue(name);
+        const ratingData = renderRatingStars(ratingValue);
+        const rating = document.createElement("div");
+        rating.className = "item-rating";
+        rating.setAttribute("data-rating-name", name);
+        rating.setAttribute("aria-label", `${getTranslation('ratingLabel') || 'Rating'} ${ratingValue.toFixed(1)} out of 5`);
+        rating.innerHTML = `<span class="stars" aria-hidden="true">${ratingData.stars}</span><span class="rating-number">${ratingData.value}</span>`;
+
         // CTA
         const cta = document.createElement("button");
         cta.className = "item-cta ripple-container";
@@ -497,6 +813,7 @@
         // Content row
         li.appendChild(title);
         li.appendChild(trailing);
+        li.appendChild(rating);
         if (description) li.appendChild(desc);
         li.appendChild(cta);
         return li;
@@ -514,7 +831,9 @@
           const imageUrl = text(item.getElementsByTagName("image")[0]);
           const numeric = !isNaN(Number(priceRaw)) ? Number(priceRaw) : 0;
           const price = priceRaw && !isNaN(Number(priceRaw)) ? currency.format(numeric) : priceRaw;
-          container.appendChild(createMenuItemElement(name, price, desc, imageUrl, numeric));
+          const card = createMenuItemElement(name, price, desc, imageUrl, numeric);
+          card.style.setProperty("--delay", `${i * 70}ms`);
+          container.appendChild(card);
         }
       }
 
@@ -792,7 +1111,9 @@
         return `ORD-${timestamp}-${random}`.toUpperCase();
       }
 
-      function finalizeOrder() {
+      let currentOrderDetails = null;
+
+      async function finalizeOrder() {
         if (cart.length === 0) {
           alert("Your cart is empty!");
           hideOrderModal();
@@ -804,28 +1125,311 @@
           alert("Please select an order type!");
           return;
         }
+        const paymentMethodInput = document.getElementById("payment-method");
+        const paymentMethod = paymentMethodInput.value;
+        if (!paymentMethod) {
+          alert("Please select a payment method!");
+          return;
+        }
         const customerInput = document.getElementById("customer-name");
         const customerName = customerInput?.value.trim() || "Guest";
         const totalAmount = cart.reduce((sum, item) => sum + (item.priceValue * item.quantity), 0);
         const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-        const orderDetails = {
+        
+        currentOrderDetails = {
           id: generateOrderId(),
           customerName,
           type: orderType,
+          paymentMethod: paymentMethod,
           items: cart.map(i => ({ name: i.name, qty: i.quantity, price: i.priceValue })),
           itemCount: totalCount,
           total: totalAmount,
           createdAt: new Date().toISOString()
         };
-        saveOrderToLocal(orderDetails);
-        appendOrderToCsv(orderDetails);
-        alert(`Order finalized!\n\n📋 Order Type: ${orderType}\n📦 Items: ${totalCount}\n💰 Total: ${currency.format(totalAmount)}\n\nThank you for your order!`);
+
+        // If online payment, show payment modal with QR code
+        if (paymentMethod === "Online") {
+          hideOrderModal();
+          showPaymentModal(totalAmount);
+        } else {
+          // Offline payment - complete order directly
+          await completeOrder(currentOrderDetails);
+        }
+      }
+
+      function showPaymentModal(amount) {
+        const modal = document.getElementById("payment-modal");
+        if (!modal) return;
+        
+        // Reset payment attempts
+        paymentAttempts = 0;
+        
+        const amountEl = document.getElementById("payment-amount");
+        if (amountEl) amountEl.textContent = currency.format(amount);
+        
+        // Reset confirm button
+        const confirmBtn = document.getElementById("confirm-payment");
+        if (confirmBtn) {
+          confirmBtn.disabled = false;
+          confirmBtn.style.display = '';
+          confirmBtn.textContent = getTranslation('confirmPayment') || 'Confirm Payment';
+        }
+        
+        // Generate QR code
+        generateQRCode(amount);
+        
+        // Reset payment status
+        const statusEl = document.getElementById("payment-status");
+        if (statusEl) {
+          statusEl.innerHTML = `
+            <div class="payment-status-icon">⏳</div>
+            <p class="payment-status-text" data-i18n="waitingPayment">Waiting for payment...</p>
+          `;
+        }
+        
+        // Apply translations to payment modal
+        document.querySelectorAll('#payment-modal [data-i18n]').forEach(element => {
+          const key = element.getAttribute('data-i18n');
+          if (translations[currentLanguage] && translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
+          }
+        });
+        
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      function hidePaymentModal() {
+        const modal = document.getElementById("payment-modal");
+        if (modal) modal.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+
+      function generateQRCode(amount) {
+        const qrcodeContainer = document.getElementById("qrcode");
+        if (!qrcodeContainer) return;
+        
+        // Show loading indicator
+        qrcodeContainer.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px;">
+            <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
+            <p style="color: var(--ink-dim); font-size: 0.9rem;">Generating QR Code...</p>
+          </div>
+        `;
+        
+        // Generate payment data (you can customize this with your payment gateway details)
+        const paymentData = {
+          amount: amount,
+          orderId: currentOrderDetails?.id || generateOrderId(),
+          merchant: "Restaurant",
+          timestamp: new Date().toISOString()
+        };
+        
+        // Create QR code data string (format: UPI payment link or payment gateway URL)
+        // For demo purposes, using a simple format. In production, use actual payment gateway QR format
+        const qrData = `upi://pay?pa=restaurant@paytm&pn=Restaurant&am=${amount.toFixed(2)}&cu=USD&tn=Order ${paymentData.orderId}`;
+        
+        // Generate QR code using qrcode.js library
+        if (typeof QRCode !== 'undefined') {
+          // Try using toDataURL first (more reliable)
+          QRCode.toDataURL(qrData, {
+            width: 256,
+            height: 256,
+            margin: 2,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            },
+            errorCorrectionLevel: 'M'
+          }, function (error, url) {
+            if (error) {
+              console.error('QR Code generation error:', error);
+              // Fallback to canvas method
+              try {
+                const canvas = document.createElement('canvas');
+                qrcodeContainer.appendChild(canvas);
+                QRCode.toCanvas(canvas, qrData, {
+                  width: 256,
+                  height: 256,
+                  margin: 2,
+                  color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                  },
+                  errorCorrectionLevel: 'M'
+                }, function (canvasError) {
+                  if (canvasError) {
+                    console.error('Canvas QR Code generation error:', canvasError);
+                    qrcodeContainer.innerHTML = '<p style="color: var(--ink-dim); padding: 20px; text-align: center;">QR Code generation failed. Please refresh and try again.</p>';
+                  }
+                });
+              } catch (e) {
+                qrcodeContainer.innerHTML = '<p style="color: var(--ink-dim); padding: 20px; text-align: center;">QR Code generation failed. Please refresh and try again.</p>';
+              }
+            } else {
+              // Create img element with the data URL
+              const img = document.createElement('img');
+              img.src = url;
+              img.alt = 'Payment QR Code';
+              img.style.width = '256px';
+              img.style.height = '256px';
+              img.style.display = 'block';
+              img.style.margin = '0 auto';
+              qrcodeContainer.appendChild(img);
+              console.log('QR Code generated successfully');
+            }
+          });
+        } else {
+          // Fallback if QRCode library didn't load - wait a bit and try again
+          qrcodeContainer.innerHTML = `
+            <div style="padding: 20px; text-align: center; border: 2px dashed var(--ink-dim); border-radius: 8px;">
+              <p style="color: var(--ink-dim); margin-bottom: 10px;">Loading QR Code Library...</p>
+              <p style="font-size: 0.9em; color: var(--ink-dim);">Amount: ${currency.format(amount)}</p>
+              <p style="font-size: 0.9em; color: var(--ink-dim);">Order ID: ${paymentData.orderId}</p>
+            </div>
+          `;
+          
+          // Retry after a short delay
+          setTimeout(() => {
+            if (typeof QRCode !== 'undefined') {
+              generateQRCode(amount);
+            }
+          }, 500);
+        }
+      }
+
+      let paymentAttempts = 0;
+      const MAX_PAYMENT_ATTEMPTS = 3;
+
+      async function confirmPayment() {
+        if (!currentOrderDetails) return;
+        
+        const statusEl = document.getElementById("payment-status");
+        const confirmBtn = document.getElementById("confirm-payment");
+        const cancelBtn = document.getElementById("cancel-payment");
+        
+        // Disable buttons during processing
+        if (confirmBtn) confirmBtn.disabled = true;
+        if (cancelBtn) cancelBtn.disabled = true;
+        
+        // Show processing status
+        if (statusEl) {
+          statusEl.innerHTML = `
+            <div class="payment-status-icon" style="color: var(--orange);">⏳</div>
+            <p class="payment-status-text" style="color: var(--ink);" data-i18n="processingPayment">Processing payment...</p>
+          `;
+        }
+        
+        // Simulate payment processing (in production, this would be an actual API call)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Simulate payment verification (70% success rate for demo)
+        // In production, replace this with actual payment gateway verification
+        paymentAttempts++;
+        const paymentSuccess = Math.random() > 0.3; // 70% success rate
+        
+        if (paymentSuccess) {
+          // Payment successful
+          if (statusEl) {
+            statusEl.innerHTML = `
+              <div class="payment-status-icon" style="color: #4CAF50; font-size: 2.5rem;">✓</div>
+              <p class="payment-status-text" style="color: #4CAF50; font-weight: 600;" data-i18n="paymentSuccess">Payment successful!</p>
+            `;
+          }
+          
+          // Apply translation
+          const successText = statusEl?.querySelector('[data-i18n="paymentSuccess"]');
+          if (successText && translations[currentLanguage]?.paymentSuccess) {
+            successText.textContent = translations[currentLanguage].paymentSuccess;
+          }
+          
+          // Wait a moment to show success message
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Complete the order
+          await completeOrder(currentOrderDetails);
+          hidePaymentModal();
+          paymentAttempts = 0; // Reset attempts
+        } else {
+          // Payment failed
+          if (paymentAttempts >= MAX_PAYMENT_ATTEMPTS) {
+            // Max attempts reached
+            if (statusEl) {
+              statusEl.innerHTML = `
+                <div class="payment-status-icon" style="color: #f44336; font-size: 2.5rem;">✗</div>
+                <p class="payment-status-text" style="color: #f44336; font-weight: 600;" data-i18n="paymentFailedMax">Payment failed. Maximum attempts reached.</p>
+                <p style="font-size: 0.85rem; color: var(--ink-dim); margin-top: 8px;" data-i18n="pleaseTryOffline">Please try offline payment or contact support.</p>
+              `;
+            }
+            
+            // Apply translations
+            const failedText = statusEl?.querySelector('[data-i18n="paymentFailedMax"]');
+            const offlineText = statusEl?.querySelector('[data-i18n="pleaseTryOffline"]');
+            if (failedText && translations[currentLanguage]?.paymentFailedMax) {
+              failedText.textContent = translations[currentLanguage].paymentFailedMax;
+            }
+            if (offlineText && translations[currentLanguage]?.pleaseTryOffline) {
+              offlineText.textContent = translations[currentLanguage].pleaseTryOffline;
+            }
+            
+            // Re-enable cancel button only
+            if (cancelBtn) cancelBtn.disabled = false;
+            if (confirmBtn) confirmBtn.style.display = 'none';
+          } else {
+            // Show failure message with retry option
+            if (statusEl) {
+              statusEl.innerHTML = `
+                <div class="payment-status-icon" style="color: #f44336; font-size: 2.5rem;">✗</div>
+                <p class="payment-status-text" style="color: #f44336; font-weight: 600;" data-i18n="paymentFailed">Payment failed. Please try again.</p>
+                <p style="font-size: 0.85rem; color: var(--ink-dim); margin-top: 8px;">Attempt ${paymentAttempts} of ${MAX_PAYMENT_ATTEMPTS}</p>
+              `;
+            }
+            
+            // Apply translation
+            const failedText = statusEl?.querySelector('[data-i18n="paymentFailed"]');
+            if (failedText && translations[currentLanguage]?.paymentFailed) {
+              failedText.textContent = translations[currentLanguage].paymentFailed;
+            }
+            
+            // Re-enable buttons for retry
+            if (confirmBtn) {
+              confirmBtn.disabled = false;
+              confirmBtn.textContent = getTranslation('retryPayment') || 'Retry Payment';
+            }
+            if (cancelBtn) cancelBtn.disabled = false;
+          }
+        }
+      }
+
+      async function completeOrder(orderDetails) {
+        await saveOrderToLocal(orderDetails);
+        await appendOrderToCsv(orderDetails);
+        
+        const paymentMethodText = orderDetails.paymentMethod === "Online" ? "Online Payment" : "Offline Payment";
+        alert(`Order finalized!\n\n📋 Order Type: ${orderDetails.type}\n💳 Payment: ${paymentMethodText}\n📦 Items: ${orderDetails.itemCount}\n💰 Total: ${currency.format(orderDetails.total)}\n\nThank you for your order!`);
+        
+        // Refresh dashboard if it's open
+        const dashboardModal = document.getElementById('admin-dashboard-modal');
+        if (dashboardModal && !dashboardModal.classList.contains('hidden')) {
+          updateDashboardStats();
+          renderDashboardCharts();
+          renderDashboardOrdersSummary();
+        }
+        
+        // Reset cart and form
         cart = [];
         updateCartDisplay();
-        orderTypeInput.value = "";
+        const orderTypeInput = document.getElementById("order-type");
+        const paymentMethodInput = document.getElementById("payment-method");
+        const customerInput = document.getElementById("customer-name");
+        if (orderTypeInput) orderTypeInput.value = "";
+        if (paymentMethodInput) paymentMethodInput.value = "";
         if (customerInput) customerInput.value = "";
         document.querySelectorAll(".order-type-btn").forEach(btn => btn.classList.remove("active"));
-        hideOrderModal();
+        document.querySelectorAll(".payment-method-btn").forEach(btn => btn.classList.remove("active"));
+        
+        currentOrderDetails = null;
+        
         const status = document.getElementById("status");
         if (status) {
           status.textContent = "Order finalized successfully!";
@@ -935,13 +1539,14 @@
 
       function ordersToCsv(orders) {
         const escape = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
-        const header = ["Order ID", "Customer Name", "Order Type", "Item Count", "Total", "Created At", "Items"];
+        const header = ["Order ID", "Customer Name", "Order Type", "Payment Method", "Item Count", "Total", "Created At", "Items"];
         const rows = orders.map(order => {
           const itemsSummary = (order.items ?? []).map(it => `${it.name} x${it.qty} @ ${it.price != null ? it.price.toFixed(2) : ""}`).join(" | ");
           return [
             order.id ?? "",
             order.customerName ?? "",
             order.type ?? "",
+            order.paymentMethod ?? "N/A",
             order.itemCount ?? 0,
             order.total != null ? order.total.toFixed(2) : "",
             order.createdAt ? new Date(order.createdAt).toLocaleString() : "",
@@ -962,7 +1567,7 @@
         const formatRow = (row) => row.map(escape).join(",");
 
         if (!existing) {
-          const header = ["Order ID", "Customer Name", "Order Type", "Item Count", "Total", "Created At", "Items"];
+          const header = ["Order ID", "Customer Name", "Order Type", "Payment Method", "Item Count", "Total", "Created At", "Items"];
           csv += formatRow(header) + "\r\n";
         }
 
@@ -971,6 +1576,7 @@
           order.id ?? "",
           order.customerName ?? "",
           order.type ?? "",
+          order.paymentMethod ?? "N/A",
           order.itemCount ?? 0,
           order.total != null ? order.total.toFixed(2) : "",
           order.createdAt ? new Date(order.createdAt).toLocaleString() : "",
@@ -1035,6 +1641,7 @@
                 <th>Order ID</th>
                 <th>Customer Name</th>
                 <th>Order Type</th>
+                <th>Payment Method</th>
                 <th>Items</th>
                 <th>Item Count</th>
                 <th>Total</th>
@@ -1050,6 +1657,7 @@
                     <td><code>${o.id || 'N/A'}</code></td>
                     <td>${o.customerName || 'Guest'}</td>
                     <td><span class="order-type-badge order-type-${o.type?.toLowerCase().replace('-', '') || ''}">${o.type || 'N/A'}</span></td>
+                    <td><span class="payment-method-badge payment-method-${o.paymentMethod?.toLowerCase() || ''}">${o.paymentMethod || 'N/A'}</span></td>
                     <td class="items-cell">${itemsSummary || 'N/A'}</td>
                     <td>${o.itemCount || 0}</td>
                     <td class="total-cell"><strong>${currency.format(o.total || 0)}</strong></td>
@@ -1063,13 +1671,344 @@
         container.innerHTML = tableHTML;
       }
 
+      // Dashboard charts
+      let revenueChart = null;
+      let ordersTypeChart = null;
+      let paymentMethodChart = null;
+      let topItemsChart = null;
+
+      function calculateDashboardStats() {
+        const orders = getSavedOrders();
+        
+        // Total Revenue
+        const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+        
+        // Total Orders
+        const totalOrders = orders.length;
+        
+        // Total Customers (unique)
+        const uniqueCustomers = new Set(orders.map(o => o.customerName || 'Guest')).size;
+        
+        // Average Order Value
+        const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+        
+        return {
+          totalRevenue,
+          totalOrders,
+          uniqueCustomers,
+          avgOrderValue,
+          orders
+        };
+      }
+
+      function updateDashboardStats() {
+        const stats = calculateDashboardStats();
+        
+        document.getElementById('stat-total-revenue').textContent = currency.format(stats.totalRevenue);
+        document.getElementById('stat-total-orders').textContent = stats.totalOrders;
+        document.getElementById('stat-total-customers').textContent = stats.uniqueCustomers;
+        document.getElementById('stat-avg-order').textContent = currency.format(stats.avgOrderValue);
+      }
+
+      function getRevenueByDate(orders) {
+        const revenueByDate = {};
+        orders.forEach(order => {
+          if (order.createdAt) {
+            const date = new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            revenueByDate[date] = (revenueByDate[date] || 0) + (order.total || 0);
+          }
+        });
+        
+        const sortedDates = Object.keys(revenueByDate).sort((a, b) => {
+          return new Date(a) - new Date(b);
+        });
+        
+        return {
+          labels: sortedDates.slice(-7), // Last 7 days
+          data: sortedDates.slice(-7).map(date => revenueByDate[date])
+        };
+      }
+
+      function getOrdersByType(orders) {
+        const typeCount = {};
+        orders.forEach(order => {
+          const type = order.type || 'Unknown';
+          typeCount[type] = (typeCount[type] || 0) + 1;
+        });
+        
+        return {
+          labels: Object.keys(typeCount),
+          data: Object.values(typeCount),
+          colors: ['#FF7A1A', '#FFD166', '#4ECDC4']
+        };
+      }
+
+      function getPaymentMethods(orders) {
+        const methodCount = {};
+        orders.forEach(order => {
+          const method = order.paymentMethod || 'Unknown';
+          methodCount[method] = (methodCount[method] || 0) + 1;
+        });
+        
+        return {
+          labels: Object.keys(methodCount),
+          data: Object.values(methodCount),
+          colors: ['#4CAF50', '#9E9E9E']
+        };
+      }
+
+      function getTopSellingItems(orders) {
+        const itemCount = {};
+        orders.forEach(order => {
+          if (order.items) {
+            order.items.forEach(item => {
+              const name = item.name || 'Unknown';
+              itemCount[name] = (itemCount[name] || 0) + (item.qty || 0);
+            });
+          }
+        });
+        
+        // Sort by quantity and get top 5
+        const sorted = Object.entries(itemCount)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+        
+        return {
+          labels: sorted.map(([name]) => name),
+          data: sorted.map(([, count]) => count),
+          colors: ['#FF7A1A', '#FFD166', '#4ECDC4', '#95E1D3', '#F38181']
+        };
+      }
+
+      function renderDashboardCharts() {
+        const orders = getSavedOrders();
+        
+        // Destroy existing charts if they exist
+        if (revenueChart) revenueChart.destroy();
+        if (ordersTypeChart) ordersTypeChart.destroy();
+        if (paymentMethodChart) paymentMethodChart.destroy();
+        if (topItemsChart) topItemsChart.destroy();
+        
+        // Revenue Over Time Chart
+        const revenueData = getRevenueByDate(orders);
+        const revenueCtx = document.getElementById('revenue-chart');
+        if (revenueCtx) {
+          revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+              labels: revenueData.labels,
+              datasets: [{
+                label: 'Revenue ($)',
+                data: revenueData.data,
+                borderColor: '#FF7A1A',
+                backgroundColor: 'rgba(255, 122, 26, 0.1)',
+                tension: 0.4,
+                fill: true
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function(value) {
+                      return '$' + value.toFixed(0);
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+        
+        // Orders by Type Chart
+        const ordersTypeData = getOrdersByType(orders);
+        const ordersTypeCtx = document.getElementById('orders-type-chart');
+        if (ordersTypeCtx) {
+          ordersTypeChart = new Chart(ordersTypeCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ordersTypeData.labels,
+              datasets: [{
+                data: ordersTypeData.data,
+                backgroundColor: ordersTypeData.colors
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  position: 'bottom'
+                }
+              }
+            }
+          });
+        }
+        
+        // Payment Methods Chart
+        const paymentData = getPaymentMethods(orders);
+        const paymentCtx = document.getElementById('payment-method-chart');
+        if (paymentCtx) {
+          paymentMethodChart = new Chart(paymentCtx, {
+            type: 'pie',
+            data: {
+              labels: paymentData.labels,
+              datasets: [{
+                data: paymentData.data,
+                backgroundColor: paymentData.colors
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  position: 'bottom'
+                }
+              }
+            }
+          });
+        }
+        
+        // Top Selling Items Chart
+        const topItemsData = getTopSellingItems(orders);
+        const topItemsCtx = document.getElementById('top-items-chart');
+        if (topItemsCtx) {
+          topItemsChart = new Chart(topItemsCtx, {
+            type: 'bar',
+            data: {
+              labels: topItemsData.labels,
+              datasets: [{
+                label: 'Quantity Sold',
+                data: topItemsData.data,
+                backgroundColor: topItemsData.colors
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 1
+                  }
+                }
+              }
+            }
+          });
+        }
+      }
+
+      function renderDashboardOrdersSummary() {
+        const orders = getSavedOrders();
+        const container = document.getElementById('dashboard-orders-summary');
+        if (!container) return;
+        
+        // Get last 5 orders
+        const recentOrders = orders.slice(0, 5);
+        
+        if (recentOrders.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--ink-dim); padding: 20px;">No orders yet.</p>';
+          return;
+        }
+        
+        const html = recentOrders.map(order => {
+          const date = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A';
+          return `
+            <div class="dashboard-order-item">
+              <div class="order-item-info">
+                <strong>${order.customerName || 'Guest'}</strong>
+                <span class="order-item-type">${order.type || 'N/A'}</span>
+                <span class="order-item-payment">${order.paymentMethod || 'N/A'}</span>
+              </div>
+              <div class="order-item-amount">
+                <strong>${currency.format(order.total || 0)}</strong>
+                <span class="order-item-date">${date}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        container.innerHTML = html;
+      }
+
+      function showDashboard() {
+        const modal = document.getElementById('admin-dashboard-modal');
+        if (!modal) return;
+        
+        // Sync dashboard language selector
+        const dashboardLangSelect = document.getElementById('dashboard-language-select');
+        if (dashboardLangSelect) {
+          dashboardLangSelect.value = currentLanguage;
+        }
+        
+        // Sync dashboard theme toggle
+        const dashboardThemeToggle = document.getElementById('dashboard-theme-toggle');
+        if (dashboardThemeToggle) {
+          const isDark = currentTheme === 'dark';
+          dashboardThemeToggle.setAttribute('aria-pressed', String(isDark));
+          const dashboardThemeIcon = dashboardThemeToggle.querySelector('.theme-toggle-icon');
+          const dashboardThemeText = dashboardThemeToggle.querySelector('.theme-toggle-text');
+          if (dashboardThemeIcon) dashboardThemeIcon.textContent = isDark ? '☀️' : '🌙';
+          if (dashboardThemeText) dashboardThemeText.textContent = isDark ? 'Light' : 'Dark';
+        }
+        
+        // Apply translations to dashboard
+        document.querySelectorAll('#admin-dashboard-modal [data-i18n]').forEach(element => {
+          const key = element.getAttribute('data-i18n');
+          if (translations[currentLanguage] && translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
+          }
+        });
+        
+        updateDashboardStats();
+        renderDashboardCharts();
+        renderDashboardOrdersSummary();
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function hideDashboard() {
+        const modal = document.getElementById('admin-dashboard-modal');
+        if (modal) modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
       document.getElementById("year").textContent = new Date().getFullYear();
       // initialize header total formatting once currency is ready
       const totalSpan = document.getElementById("cart-total");
       if (totalSpan) totalSpan.textContent = currency.format(0);
       window.addEventListener("DOMContentLoaded", async () => {
+        // Initialize theme
+        setTheme(currentTheme);
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+          themeToggleBtn.addEventListener('click', toggleTheme);
+          updateThemeToggleButton();
+        }
+
         // Initialize language
         setLanguage(currentLanguage);
+
+        // Trigger fade-in animations once initial setup is done
+        requestAnimationFrame(() => {
+          document.body.classList.add('page-loaded');
+        });
         
         // Language selector event listener
         const langSelect = document.getElementById('language-select');
@@ -1138,6 +2077,15 @@
             });
           });
           
+          // Payment method button handlers
+          document.querySelectorAll(".payment-method-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              document.querySelectorAll(".payment-method-btn").forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+              document.getElementById("payment-method").value = btn.dataset.method;
+            });
+          });
+          
           // Modal event handlers
           const orderBtn = document.getElementById("cta-order");
           if (orderBtn) {
@@ -1162,6 +2110,36 @@
             finalizeBtn.addEventListener("click", finalizeOrder);
           }
 
+          // Payment modal handlers
+          const paymentModal = document.getElementById("payment-modal");
+          const paymentCloseBtn = document.querySelector(".payment-modal-close");
+          const confirmPaymentBtn = document.getElementById("confirm-payment");
+          const cancelPaymentBtn = document.getElementById("cancel-payment");
+          
+          if (paymentCloseBtn) {
+            paymentCloseBtn.addEventListener("click", hidePaymentModal);
+          }
+          
+          if (cancelPaymentBtn) {
+            cancelPaymentBtn.addEventListener("click", () => {
+              hidePaymentModal();
+              currentOrderDetails = null;
+            });
+          }
+          
+          if (confirmPaymentBtn) {
+            confirmPaymentBtn.addEventListener("click", confirmPayment);
+          }
+          
+          if (paymentModal) {
+            paymentModal.addEventListener("click", (e) => {
+              if (e.target === paymentModal) {
+                hidePaymentModal();
+                currentOrderDetails = null;
+              }
+            });
+          }
+
           const modal = document.getElementById("order-modal");
           if (modal) {
             modal.addEventListener("click", (e) => {
@@ -1177,6 +2155,11 @@
           const clearSaved = document.getElementById('clear-saved-orders');
         const downloadOrdersBtn = document.getElementById('download-orders');
         const managerOrdersBtn = document.getElementById('manager-orders');
+        const adminDashboardBtn = document.getElementById('admin-dashboard');
+        const dashboardModal = document.getElementById('admin-dashboard-modal');
+        const dashboardCloseBtn2 = document.getElementById('close-dashboard');
+        const refreshDashboardBtn = document.getElementById('refresh-dashboard');
+        
         const openSavedOrders = () => {
           if (!savedModal) return;
               renderSavedOrders();
@@ -1187,6 +2170,58 @@
           viewSavedBtn.addEventListener('click', openSavedOrders);
           }
         if (managerOrdersBtn) managerOrdersBtn.addEventListener('click', openSavedOrders);
+        
+        // Dashboard event handlers
+        if (adminDashboardBtn) {
+          adminDashboardBtn.addEventListener('click', showDashboard);
+        }
+        if (dashboardCloseBtn2) {
+          dashboardCloseBtn2.addEventListener('click', hideDashboard);
+        }
+        if (refreshDashboardBtn) {
+          refreshDashboardBtn.addEventListener('click', () => {
+            updateDashboardStats();
+            renderDashboardCharts();
+            renderDashboardOrdersSummary();
+          });
+        }
+        if (dashboardModal) {
+          dashboardModal.addEventListener('click', (e) => {
+            if (e.target === dashboardModal) hideDashboard();
+          });
+        }
+        
+        // Dashboard language selector
+        const dashboardLangSelect = document.getElementById('dashboard-language-select');
+        if (dashboardLangSelect) {
+          dashboardLangSelect.value = currentLanguage;
+          dashboardLangSelect.addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+            // Update main page language selector too
+            if (langSelect) langSelect.value = e.target.value;
+          });
+        }
+        
+        // Dashboard theme toggle
+        const dashboardThemeToggle = document.getElementById('dashboard-theme-toggle');
+        if (dashboardThemeToggle) {
+          dashboardThemeToggle.setAttribute('aria-pressed', String(currentTheme === 'dark'));
+          const dashboardThemeIcon = dashboardThemeToggle.querySelector('.theme-toggle-icon');
+          const dashboardThemeText = dashboardThemeToggle.querySelector('.theme-toggle-text');
+          if (dashboardThemeIcon) dashboardThemeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+          if (dashboardThemeText) dashboardThemeText.textContent = currentTheme === 'dark' ? 'Light' : 'Dark';
+          
+          dashboardThemeToggle.addEventListener('click', () => {
+            toggleTheme();
+            // Update main page theme toggle too
+            updateThemeToggleButton();
+            // Update dashboard theme toggle
+            const isDark = currentTheme === 'dark';
+            dashboardThemeToggle.setAttribute('aria-pressed', String(isDark));
+            if (dashboardThemeIcon) dashboardThemeIcon.textContent = isDark ? '☀️' : '🌙';
+            if (dashboardThemeText) dashboardThemeText.textContent = isDark ? 'Light' : 'Dark';
+          });
+        }
         document.addEventListener('keydown', (e) => {
           if (e.altKey && e.shiftKey && e.key.toLowerCase() === 'o') {
             e.preventDefault();
@@ -1222,12 +2257,21 @@
             });
           }
 
-          // Close modal on Escape key (both modals)
+          // Close modal on Escape key (all modals)
           document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
               const modalEl = document.getElementById("order-modal");
               if (modalEl && !modalEl.classList.contains("hidden")) {
                 hideOrderModal();
+              }
+              const paymentModalEl = document.getElementById("payment-modal");
+              if (paymentModalEl && !paymentModalEl.classList.contains("hidden")) {
+                hidePaymentModal();
+                currentOrderDetails = null;
+              }
+              const dashboardModalEl = document.getElementById('admin-dashboard-modal');
+              if (dashboardModalEl && !dashboardModalEl.classList.contains('hidden')) {
+                hideDashboard();
               }
               const sm = document.getElementById('saved-orders-modal');
               if (sm && !sm.classList.contains('hidden')) {
